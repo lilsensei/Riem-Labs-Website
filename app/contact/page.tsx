@@ -13,9 +13,6 @@ export const metadata: Metadata = {
     "Tell Riem Labs what you're trying to solve. You do not need a finished brief to start the conversation.",
 };
 
-/** The Direct block's real inbox — deliberately not site.email, which is
- *  the legal pages' address. See the block below for why. */
-const CONTACT_EMAIL = "info@riemlabs.dev";
 /** GitHub is a working tool, not a public channel — the footer omits it too. */
 const PUBLIC_SOCIALS = socials.filter((s) => s.icon !== "github");
 
@@ -64,21 +61,14 @@ export default function ContactPage() {
                 </p>
 
                 <dl className="mt-10 space-y-8">
-                  {/* Deliberately not site.email — that's the legal-pages
-                      address (hello@riemlabs.com), while this block shows
-                      the studio's actual inbox. Once the hero metadata block
-                      (Part 1) and the "Or email…" line under Send Brief
-                      (Part 6) are both gone, this is the only email on the
-                      page, so the two addresses never appear side by side
-                      to read as inconsistent. */}
                   <Fade>
                     <dt className="meta text-ink/60">Email</dt>
                     <dd className="mt-2">
                       <a
-                        href={`mailto:${CONTACT_EMAIL}`}
+                        href={`mailto:${site.email}`}
                         className="link-wipe text-lede text-ink"
                       >
-                        {CONTACT_EMAIL}
+                        {site.email}
                       </a>
                     </dd>
                   </Fade>

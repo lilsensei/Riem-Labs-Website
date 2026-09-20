@@ -196,6 +196,19 @@
     @apply font-mono text-micro uppercase tracking-[0.18em];
   }
 
+  /* ---- Legal disclosure panels ----------------------------------------
+     Collapsed only once JS is present to open them again, matching the
+     `js` flag the layout sets before first paint. Without it the panels
+     stay open and a no-JS visitor reads the whole policy rather than just
+     the brief statements. GSAP drives height/opacity inline from there. */
+  .legal-panel {
+    overflow: hidden;
+  }
+  .js .legal-panel {
+    height: 0;
+    opacity: 0;
+  }
+
   /* ---- Line-reveal primitive ------------------------------------------
      The mask that makes the line slide up is `overflow: hidden`, and its box
      is the line box — which stops at the baseline-ish bottom of the em, not at

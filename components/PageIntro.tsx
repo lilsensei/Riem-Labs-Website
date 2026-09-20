@@ -1,8 +1,11 @@
+import type { ReactNode } from "react";
 import LiveClock from "@/components/LiveClock";
 import RevealSection from "@/components/RevealSection";
 import { Fade, RevealBlock, RevealLines } from "@/components/RevealText";
 
-type MetaItem = { label: string; value: string };
+/** `value` is a node, not just a string, so a fact can be a link — the
+ *  legal pages' Contact fact is a real mailto. */
+type MetaItem = { label: string; value: ReactNode };
 
 type PageIntroProps = {
   index: string;
