@@ -12,6 +12,13 @@ type SectionHeaderProps = {
   /** Right-aligned metadata or a CTA. */
   aside?: ReactNode;
   className?: string;
+  /**
+   * Widens the supporting paragraph from 3 of 12 columns to 4, taking the
+   * column back off the headline, which does not use its full width at any
+   * viewport this applies to. Opt-in per call site: the narrow default is
+   * still what every other section uses.
+   */
+  wideSupport?: boolean;
 };
 
 /**
@@ -25,6 +32,7 @@ export default function SectionHeader({
   description,
   aside,
   className = "",
+  wideSupport = false,
 }: SectionHeaderProps) {
   return (
     <header className={`hairline-t pt-5 ${className}`}>
@@ -49,14 +57,18 @@ export default function SectionHeader({
             <RevealLines
               as="h2"
               lines={lines}
-              className="text-balance text-[clamp(2rem,3.9vw,4.5rem)] font-medium leading-none tracking-[-0.035em] md:col-span-8 lg:col-span-9"
+              className={`text-balance text-[clamp(2rem,3.9vw,4.5rem)] font-medium leading-none tracking-[-0.035em] md:col-span-8 ${
+                wideSupport ? "lg:col-span-8" : "lg:col-span-9"
+              }`}
             />
           ) : null}
 
           {description ? (
             <Fade
               as="p"
-              className="text-lede text-ink/55 md:col-span-4 md:pt-1 lg:col-span-3"
+              className={`text-lede text-ink/55 md:col-span-4 md:pt-1 ${
+                wideSupport ? "lg:col-span-4" : "lg:col-span-3"
+              }`}
             >
               {description}
             </Fade>

@@ -67,6 +67,9 @@ export default function Header() {
   const goneRef = useRef(false);
   const atTopRef = useRef(true);
   const scrollLockY = useRef(0);
+  /** The route the lock was taken on, so the unlock can tell a dismissal
+   *  apart from a navigation. */
+  const scrollLockPath = useRef<string | null>(null);
 
   /**
    * The only way out of the open state.
@@ -118,6 +121,15 @@ export default function Header() {
     if (!open) {
       delete document.documentElement.dataset.menuOpen;
       const y = scrollLockY.current;
+      // A drawer link changes the route, which closes the drawer (see the
+      // pathname effect above) and lands here. Restoring the position the
+      // lock was taken at would then drop the visitor partway down the NEW
+      // page — /about opened at wherever the home page had been left. The
+      // restore belongs to a dismissal, not to a navigation; on a route
+      // change the body lock is simply released and SmoothScrollProvider's
+      // own route effect takes the page to the top.
+      const navigated = scrollLockPath.current !== null && scrollLockPath.current !== pathname;
+      scrollLockPath.current = null;
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
@@ -127,12 +139,13 @@ export default function Header() {
       // scroll actually is via its own scroll listener, the same path
       // ordinary scrolling takes.
       start();
-      window.scrollTo(0, y);
+      if (!navigated) window.scrollTo(0, y);
       return;
     }
 
     document.documentElement.dataset.menuOpen = "true";
     scrollLockY.current = window.scrollY;
+    scrollLockPath.current = pathname;
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollLockY.current}px`;
     document.body.style.left = "0";
@@ -163,7 +176,7 @@ export default function Header() {
         toggleRef.current?.focus({ preventScroll: true });
       }
     };
-  }, [open, stop, start, close]);
+  }, [open, pathname, stop, start, close]);
 
   /**
    * Where the bar is, as a 0-to-1 scroll progress on --nav-exit.

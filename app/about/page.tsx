@@ -22,9 +22,10 @@ export default function AboutPage() {
       <PageIntro
         index="02"
         label="Studio"
-        lines={["An independent", "practice built around", "how businesses", "actually work."]}
+        lines={["Built around how", "the business", "actually works."]}
         lede="Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems. We start by understanding the business, then shape the right combination of design, software and operational tooling around what it actually needs."
         showClock={false}
+        tighterTop
         meta={[
           { label: "Founded", value: `${site.founded} — ${site.city}` },
           { label: "Practice", value: "Independent" },
@@ -65,7 +66,10 @@ export default function AboutPage() {
 
       {/* ── 02.2 / Principles ──────────────────────────────────────── */}
       <RevealSection className="bg-bone">
-        <div className="shell py-section">
+        {/* This section and 03 below share a background, so their two full
+            section paddings met as one 335px band of empty cream. Both sides
+            of that seam are trimmed; nothing inside either section changes. */}
+        <div className="shell py-section pb-[clamp(3.5rem,7.5vw,7.5rem)]">
           <SectionHeader
             index="02"
             label="Operating Principles"
@@ -91,7 +95,7 @@ export default function AboutPage() {
 
       {/* ── 02.3 / In Practice ─────────────────────────────────────── */}
       <RevealSection className="bg-bone">
-        <div className="shell py-section">
+        <div className="shell py-section pt-[clamp(3.5rem,7.5vw,7.5rem)]">
           <SectionHeader
             index="03"
             label="In Practice"
@@ -107,10 +111,11 @@ export default function AboutPage() {
 
       {/* ── 02.4 / Process ─────────────────────────────────────────── */}
       <RevealSection className="bg-canvas">
-        <div className="shell py-section">
+        <div className="shell py-section pb-[clamp(3.5rem,7.5vw,7.5rem)]">
           <SectionHeader
             index="04"
             label="Process"
+            wideSupport
             lines={["A clear process, shaped", "around the problem", "at hand."]}
             description="We keep the process visible from the start, with clear decisions, working previews and direct communication throughout. The exact path depends on the project, but the principle stays the same: understand first, build deliberately, and evolve only where it adds real value."
           />
