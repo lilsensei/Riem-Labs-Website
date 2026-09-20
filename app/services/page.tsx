@@ -42,7 +42,7 @@ export default function ServicesPage() {
       <PageIntro
         index="04"
         label="Services"
-        lines={["Four ways we help", "businesses move", "from friction to", "better systems."]}
+        lines={["Four ways we help businesses", "move from friction", "to better systems."]}
         lede="From websites and digital products to internal systems, analytics and intelligent workflows, each service starts with the problem the business is actually trying to solve."
         showClock={false}
         meta={[
@@ -70,10 +70,14 @@ export default function ServicesPage() {
 
       {/* ── 03.2 / Engagement models ───────────────────────────────── */}
       <RevealSection className="bg-bone">
-        <div className="shell py-section">
+        {/* Engagement’s bottom and Process’s top met as one 356px band — the
+            same doubled-padding seam About’s Principles → In Practice had at
+            335px. Both sides take the same trim that one did. */}
+        <div className="shell py-section pb-[clamp(3.5rem,7.5vw,7.5rem)]">
           <SectionHeader
             index="02"
             label="Engagement models"
+            wideSupport
             lines={["Different problems need", "different ways of working."]}
             description="Some engagements are best handled as a defined project. Others need ongoing support or a focused review of an existing system. We choose the structure that fits the problem, scope and level of continuity required."
           />
@@ -103,10 +107,11 @@ export default function ServicesPage() {
 
       {/* ── 03.3 / Process ─────────────────────────────────────────── */}
       <RevealSection className="bg-canvas">
-        <div className="shell py-section">
+        <div className="shell py-section pt-[clamp(3.5rem,7.5vw,7.5rem)] pb-[clamp(3.5rem,5.5vw,5.5rem)]">
           <SectionHeader
             index="03"
             label="Process"
+            wideSupport
             lines={["A clear path from the", "problem to the right", "working solution."]}
             description="Every engagement starts with understanding what needs to change, then moves through clear decisions, working previews and careful delivery. The exact process adapts to the scope, but the aim stays the same: build deliberately and keep the work visible throughout."
           />

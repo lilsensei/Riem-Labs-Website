@@ -269,21 +269,16 @@
   }
 
   /* ---- Project preview backdrop -----------------------------------------
-     A genuine blur, not an opaque cover: the page behind stays recognisable
-     while the panel in front of it stays crisp and dominant. The `@supports`
-     fallback only matters to a browser that ignores `backdrop-filter`
-     entirely — there the tint alone has to do the whole job of separating
-     the panel from the page, so it goes dark enough to read as a real
-     scrim instead of a faint wash sitting over legible body text. */
+     Near-opaque, so the work index behind it stops being readable and the
+     panel has the screen to itself. An earlier version ran this at 28% with
+     a heavy blur, which left the cards behind plainly recognisable and split
+     the attention between the two. The blur that remains only softens the
+     little that still reads at the edges; the tint is what does the work, so
+     nothing extra is needed where `backdrop-filter` is unsupported. */
   .preview-backdrop {
-    background: rgb(13 13 13 / 0.28);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .preview-backdrop {
-      background: rgb(13 13 13 / 0.72);
-    }
+    background: rgb(13 13 13 / 0.97);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 
   /* ---- Legal disclosure panels ----------------------------------------

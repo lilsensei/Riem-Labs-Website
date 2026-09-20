@@ -133,11 +133,9 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
       aria-label={`${project.title} preview`}
       className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center"
     >
-      {/* True blur, not an opaque cover — the page behind stays recognisable.
-          Falls back to a heavier tint (see globals.css) on the rare browser
-          that ignores backdrop-filter entirely, so the panel still reads as
-          the thing in front rather than a wash sitting over unreadable
-          content. */}
+      {/* Near-opaque, not a readable blur: the page behind should drop away
+          entirely so the panel has the screen to itself. The slight blur is
+          only there to soften what little reads through at the edges. */}
       <button
         type="button"
         aria-label="Close preview"
@@ -145,11 +143,14 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
         className="preview-backdrop absolute inset-0 h-full w-full cursor-default"
       />
 
+      {/* The frame is a column: the header keeps its place and the body below
+          it is what scrolls, so Close is reachable from anywhere in the
+          content and the panel never grows past the viewport. */}
       <div
         ref={panelRef}
-        className="relative max-h-[92svh] w-full max-w-6xl overflow-y-auto border border-hairline bg-canvas no-scrollbar"
+        className="relative flex max-h-[90svh] w-full max-w-6xl flex-col border border-hairline bg-canvas"
       >
-        <div className="flex items-center justify-between gap-6 border-b border-hairline px-6 py-4 lg:px-10">
+        <div className="flex shrink-0 items-center justify-between gap-6 border-b border-hairline px-6 py-4 lg:px-10">
           <p className="meta flex items-baseline gap-2">
             <span className="tnum text-accent">{project.index}</span>
             <span className="text-ink/25">/</span>
@@ -167,30 +168,79 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
           </button>
         </div>
 
-        <div className="grid lg:grid-cols-2">
-          {/* 16:9 while stacked above the content on narrow layouts, where it
-              functions as a banner. From `lg` the two columns sit side by
-              side and the richer right column (problem, solution, facts,
-              technology) runs taller than a 16:9 crop of this width would —
-              aspect-ratio wins over grid stretch-alignment when both apply
-              to the same axis, so without this override the image would
-              hold its 16:9 height and leave the remainder of the row as
-              bare canvas beneath it. `lg:h-full` matches the row instead,
-              and `object-cover` on the image crops to fill it. */}
-          <div
-            data-preview-item
-            className="relative aspect-[16/9] overflow-hidden border-b border-hairline lg:aspect-auto lg:h-full lg:border-b-0 lg:border-r"
-          >
-            <Image
-              src={project.image}
-              alt={`${project.title} homepage`}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
+        {/* Below `lg` this is one column and the whole body scrolls. From `lg`
+            the media column holds still and only the reading column moves, so
+            the screenshot stays put while you read past it. */}
+        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-2 lg:overflow-hidden">
+          {/* The media column sizes to the screenshot's own ratio (1453×846)
+              rather than a nominal 16:9, so `object-contain` has nothing to
+              letterbox and nothing is cropped. It deliberately does not
+              stretch to the row: matching the taller reading column is what
+              forced the earlier crop. The facts and technology sit beneath it,
+              which is what turns the leftover height into something useful
+              instead of bare canvas — and shortens the reading column enough
+              that most projects need no scrolling at all. */}
+          {/* Scrolls only when it has to. At ordinary window heights the image
+              and its metadata fit and this column never moves; on a short
+              viewport it scrolls rather than letting the technology row fall
+              past the bottom of the frame, which is what a plain `hidden`
+              here did at 1280x640 and below. */}
+          <div className="flex min-h-0 flex-col border-b border-hairline lg:overflow-y-auto lg:border-b-0 lg:border-r">
+            <div
+              data-preview-item
+              className="relative aspect-[1453/846] w-full shrink-0 overflow-hidden bg-bone"
+            >
+              <Image
+                src={project.image}
+                alt={`${project.title} homepage`}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-contain"
+              />
+            </div>
+
+            <div data-preview-item className="border-t border-hairline p-6 lg:p-10">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-6">
+                <div>
+                  <dt className="meta text-ink/35">Deliverables</dt>
+                  <dd className="mt-2 text-sm text-ink/70">
+                    {project.deliverables.join(", ")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="meta text-ink/35">Industry</dt>
+                  <dd className="mt-2 text-sm text-ink/70">{project.industry}</dd>
+                </div>
+                <div>
+                  <dt className="meta text-ink/35">Status</dt>
+                  <dd
+                    className={`mt-2 text-sm ${
+                      project.status === "live" ? "text-accent" : "text-ink/70"
+                    }`}
+                  >
+                    {project.status === "live" ? "Live" : "Concept"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="meta text-ink/35">Year</dt>
+                  <dd className="tnum mt-2 text-sm text-ink/70">{project.year}</dd>
+                </div>
+              </dl>
+
+              <div className="mt-6 border-t border-hairline pt-6">
+                <p className="meta text-ink/35">Technology</p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {project.technology.map((t) => (
+                    <li key={t} className="micro border border-hairline px-2 py-1 text-ink/50">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-8 p-6 lg:p-10">
+          <div className="flex min-h-0 flex-col gap-8 p-6 lg:overflow-y-auto lg:p-10">
             <div data-preview-item>
               <h2 className="text-headline font-medium">{project.title}</h2>
               <p className="meta mt-3 text-ink/45">
@@ -213,44 +263,10 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
               </div>
             </div>
 
-            <dl
+            <div
               data-preview-item
-              className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-hairline pt-6 sm:grid-cols-4"
+              className="mt-auto flex flex-wrap items-center gap-6 border-t border-hairline pt-6"
             >
-              <div>
-                <dt className="meta text-ink/35">Deliverables</dt>
-                <dd className="mt-2 text-sm text-ink/70">{project.deliverables.join(", ")}</dd>
-              </div>
-              <div>
-                <dt className="meta text-ink/35">Industry</dt>
-                <dd className="mt-2 text-sm text-ink/70">{project.industry}</dd>
-              </div>
-              <div>
-                <dt className="meta text-ink/35">Status</dt>
-                <dd
-                  className={`mt-2 text-sm ${project.status === "live" ? "text-accent" : "text-ink/70"}`}
-                >
-                  {project.status === "live" ? "Live" : "Concept"}
-                </dd>
-              </div>
-              <div>
-                <dt className="meta text-ink/35">Year</dt>
-                <dd className="tnum mt-2 text-sm text-ink/70">{project.year}</dd>
-              </div>
-            </dl>
-
-            <div data-preview-item>
-              <p className="meta text-ink/35">Technology</p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {project.technology.map((t) => (
-                  <li key={t} className="micro border border-hairline px-2 py-1 text-ink/50">
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div data-preview-item className="mt-auto flex flex-wrap items-center gap-6 pt-2">
               {project.href ? (
                 <BracketLink href={project.href} variant="framed">
                   Visit live site
