@@ -149,22 +149,22 @@ export const process = [
 export const aboutProcess = [
   {
     index: "01",
-    title: "Discovery & Architecture",
-    body: "We audit your existing workflows, data structures, and operational bottlenecks. Before writing code, we map out the system requirements—defining schema design, API boundaries, and clear business outcomes.",
+    title: "Understand the Problem",
+    body: "We start with the business, the audience and the current way things work. We identify what is getting in the way, what matters most, and what the project actually needs before deciding how to build it.",
   },
   {
     index: "02",
-    title: "Dual-Track Engineering",
-    body: "Interface design and full-stack development run together. Instead of waiting weeks for static design comps, you interact with functional code in a live preview environment early in the build cycle.",
+    title: "Shape the Solution",
+    body: "We turn what we learn into a clear direction for the experience, system and technical approach. Design and development can move together where it makes sense, with working previews used early to test the decisions being made.",
   },
   {
     index: "03",
-    title: "Integration & Launch",
-    body: "We connect backend APIs, third-party services, payment pipelines, and automated workflows. After security checks and performance tuning, we execute a seamless production deployment.",
+    title: "Build & Launch",
+    body: "We build the approved solution, connect the services it actually needs, test the experience across devices and workflows, and prepare it carefully for release. Launch happens only when the important details are working as intended.",
   },
   {
     index: "04",
-    title: "Embedded Evolution",
-    body: "Launch is the start of the system lifecycle, not the end. We stay embedded to maintain uptime, optimize performance, and continuously expand your stack into custom web apps, analytics, and AI as you scale.",
+    title: "Support & Evolve",
+    body: "After launch, we can continue supporting the system as the business changes. Improvements, new workflows and deeper capabilities are added when there is a clear reason for them, not simply because more technology is available.",
   },
 ];

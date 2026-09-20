@@ -1,103 +1,66 @@
-import { projects } from "@/lib/projects";
-
 export type TimelineEntry = {
   year: string;
   title: string;
   subtitle: string;
   description: string;
   tags: string[];
-  /** 2026 entries — the studio's live work, not history. */
+  /** Reserved for the accent dot + radar blip the timeline gives a standing
+   *  entry. Unused while every entry shares one year — see the note below. */
   current?: boolean;
 };
 
 /**
- * 2022–2025 milestones — generic and capability-focused rather than named
- * case studies, since the studio's real early history hasn't been supplied
- * yet. Two per year, matching the level of detail the old Practice section
- * carried (roles and disciplines, not client names).
+ * The practice's own record, 2026 only.
+ *
+ * This deliberately does not derive from `projects`: the timeline is about
+ * how the practice is being built, not a second rendering of the work index,
+ * and tying the two together meant every change to the public project list
+ * silently rewrote the studio's history.
+ *
+ * No entry is marked `current`. That flag exists to separate live work from
+ * history, and with a single-year record there is nothing to separate — it
+ * would only set five radar blips pinging at once. Restore it per entry once
+ * there is a second year to distinguish from.
  */
-const PLACEHOLDER: TimelineEntry[] = [
+export const experience: TimelineEntry[] = [
   {
-    year: "2022",
-    title: "Studio founded",
+    year: "2026",
+    title: "Founded",
     subtitle: "Nairobi",
     description:
-      "Riem Labs opens as an independent practice, structured around software and systems engineering from day one rather than a visual-design shop that later added development.",
+      "Riem Labs begins as an independent digital practice in Nairobi, focused on building digital presence and business systems around real operational needs.",
     tags: ["Founding"],
   },
   {
-    year: "2022",
-    title: "First engineering engagement",
-    subtitle: "Web systems",
+    year: "2026",
+    title: "Selected Work",
+    subtitle: "Websites & digital products",
     description:
-      "First client build taken on end to end — architecture, front-end, and launch — setting the working pattern every engagement since has followed.",
+      "Early projects establish the practice across websites, digital products and client-facing experiences, with each project documented according to its actual status.",
     tags: ["Web & Software Development"],
   },
   {
-    year: "2023",
-    title: "Team reaches senior capacity",
-    subtitle: "Team",
+    year: "2026",
+    title: "Systems & Automation",
+    subtitle: "Workflows & internal tools",
     description:
-      "A second senior practitioner joins, adding dedicated systems-architecture depth alongside front-end and product work.",
-    tags: ["Team"],
-  },
-  {
-    year: "2023",
-    title: "First retained engagement",
-    subtitle: "Engagement models",
-    description:
-      "Work shifts beyond one-off builds for the first time — ongoing embedded capacity for a client scaling past their original launch scope.",
-    tags: ["Embedded Capacity"],
-  },
-  {
-    year: "2024",
-    title: "Automation practice established",
-    subtitle: "Business systems",
-    description:
-      "Workflow automation and business-systems engineering formalized as a standing service line, not a one-off add-on to web builds.",
+      "The practice expands beyond presentation work into workflows, internal tools and automation where the business problem justifies it.",
     tags: ["Business Systems & Automation"],
   },
   {
-    year: "2024",
-    title: "Delivery process standardized",
-    subtitle: "Process",
+    year: "2026",
+    title: "Data & Intelligent Workflows",
+    subtitle: "Analytics & AI",
     description:
-      "A documented handover, QA, and post-launch support process adopted across every engagement, regardless of size.",
-    tags: ["Process"],
-  },
-  {
-    year: "2025",
-    title: "Data & AI capability added",
-    subtitle: "Data science",
-    description:
-      "Data analytics and AI-assisted workflows folded into the studio's core offering, built by the same team rather than handed to a separate vendor.",
+      "Analytics and AI capabilities are developed as supporting tools, used selectively where they create clear operational value.",
     tags: ["Data Science & Analytics", "AI & Intelligent Solutions"],
   },
   {
-    year: "2025",
-    title: "Audit practice formalized",
-    subtitle: "System audits",
+    year: "2026",
+    title: "Practice Development",
+    subtitle: "Process & standards",
     description:
-      "System and code audits become a standalone engagement type, for teams inheriting a codebase rather than commissioning a new one.",
-    tags: ["System & Code Audit"],
+      "Riem continues refining its process, technical standards and long-term engagement model as real work accumulates.",
+    tags: ["Process"],
   },
 ];
-
-/** 2026 — every real Work entry, marked current rather than historical.
- *  Sourced from the full project list, not `featuredProjects` — the two are
- *  different concerns that happen to have coincided before: `featured`
- *  gates the home page's own separate curated 4-project list (with a glyph
- *  choreography pool sized exactly for those 4), while this is "everything
- *  actually live in 2026," which now includes two non-featured projects too. */
-const CURRENT: TimelineEntry[] = projects
-  .filter((p) => p.year === "2026")
-  .map((p) => ({
-    year: p.year,
-    title: p.title,
-    subtitle: p.category,
-    description: p.summary,
-    tags: p.role,
-    current: true,
-  }));
-
-export const experience: TimelineEntry[] = [...PLACEHOLDER, ...CURRENT];

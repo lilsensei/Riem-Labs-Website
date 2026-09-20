@@ -24,10 +24,16 @@ export type Project = {
   featured: boolean;
   /** "template" until a project is adopted as a real business's actual live
    *  site, at which point it flips to "live" — same badge treatment either
-   *  way, just the word. All six are "template" for now. */
+   *  way, just the word. */
   status: "template" | "live";
 };
 
+/**
+ * The public index. A project is listed here only while it is meant to be
+ * publicly visible; removing an entry removes it from the Work page, the
+ * home page's featured list and the category counts in one move, because
+ * all three derive from this array.
+ */
 export const projects: Project[] = [
   {
     slug: "oracle-chemicals",
@@ -62,24 +68,8 @@ export const projects: Project[] = [
     status: "template",
   },
   {
-    slug: "the-village-restaurant",
-    index: "03",
-    title: "The Village Restaurant",
-    client: "Restaurant",
-    year: "2026",
-    category: "Restaurant",
-    summary:
-      "Menu, hours and reservations, held in a layout that survives a kitchen changing its mind weekly. Photography carries the room; the type stays out of its way.",
-    role: ["Art direction", "Web systems", "Front-end"],
-    stack: ["Next.js", "Tailwind", "GSAP"],
-    image: "/work/the-village-restaurant.jpg",
-    href: "https://thevillagerestaurant.netlify.app",
-    featured: true,
-    status: "template",
-  },
-  {
     slug: "the-clicq",
-    index: "04",
+    index: "03",
     title: "THE CLICQ",
     client: "Marketing & Communications",
     year: "2026",
@@ -91,44 +81,7 @@ export const projects: Project[] = [
     image: "/work/the-clicq.jpg",
     href: "https://clicq.netlify.app",
     featured: true,
-    status: "template",
-  },
-  {
-    slug: "kyra-platinum",
-    index: "05",
-    title: "Kyra Platinum",
-    client: "Automotive Imports",
-    year: "2026",
-    category: "Automotive Imports",
-    summary:
-      "A specification-first catalogue for a performance-import dealer, built for buyers who already know the model and want the numbers. Inventory, provenance and enquiry routing held in one structure that updates as fast as stock turns over.",
-    role: ["Web systems", "Design system", "Front-end"],
-    stack: ["Next.js", "TypeScript", "Tailwind"],
-    image: "/work/kyra-platinum.jpg",
-    href: "https://kyraimports.netlify.app",
-    // Not featured — the home page's own 03/Work list is a curated 4, with
-    // its glyph choreography pool sized exactly for those 4 (see
-    // CHOREO_OFFSETS in lib/glyphChoreographies.ts); adding a 5th/6th
-    // featured project would silently steal Home Services' own glyph slots.
-    // This batch only asked for the Work page's full index to grow.
-    featured: false,
-    status: "template",
-  },
-  {
-    slug: "the-aura-restaurant",
-    index: "06",
-    title: "The Aura Restaurant",
-    client: "Restaurant",
-    year: "2026",
-    category: "Restaurant",
-    summary:
-      "A second restaurant site built on the same instinct as the first: menu and reservations up front, atmosphere carried by photography, nothing fighting for attention. Location and hours tuned for a mall address rather than a standalone building.",
-    role: ["Art direction", "Web systems", "Front-end"],
-    stack: ["Next.js", "Tailwind", "GSAP"],
-    image: "/work/the-aura-restaurant.jpg",
-    href: "https://theaurarestaurant.netlify.app",
-    featured: false,
-    status: "template",
+    status: "live",
   },
 ];
 

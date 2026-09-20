@@ -13,7 +13,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Studio",
   description:
-    "Riem Labs is a small, senior design and engineering studio in Nairobi working on interfaces and the systems underneath them.",
+    "Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems.",
 };
 
 export default function AboutPage() {
@@ -22,14 +22,14 @@ export default function AboutPage() {
       <PageIntro
         index="02"
         label="Studio"
-        lines={["A focused studio", "with a long-term", "commitment."]}
-        lede="We are an independent studio that builds software, data systems, and digital infrastructure for growing businesses. Based in Nairobi, we stay embedded alongside our clients from initial launch through long-term scale."
+        lines={["An independent", "practice built around", "how businesses", "actually work."]}
+        lede="Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems. We start by understanding the business, then shape the right combination of design, software and operational tooling around what it actually needs."
         showClock={false}
         meta={[
           { label: "Founded", value: `${site.founded} — ${site.city}` },
-          { label: "Team", value: "4 senior practitioners" },
-          { label: "Engagements", value: "6–8 per year" },
-          { label: "Availability", value: "Q3 2026" },
+          { label: "Practice", value: "Independent" },
+          { label: "Focus", value: "Digital presence & systems" },
+          { label: "Availability", value: "Open for select projects" },
         ]}
       />
 
@@ -41,26 +41,22 @@ export default function AboutPage() {
           <div className="mt-16 grid gap-x-gutter gap-y-12 md:grid-cols-12">
             <RevealLines
               as="h2"
-              lines={["We started because", "most agencies stop", "where real value begins."]}
+              lines={["Businesses grow.", "Their digital systems", "often don’t grow", "with them."]}
               className="text-headline font-medium md:col-span-6"
             />
 
             <div className="space-y-6 text-base leading-relaxed text-ink/60 md:col-span-5 md:col-start-8">
               <Fade as="p">
-                {site.name} began in {site.founded} after watching company after company get
-                stuck with static, transactional websites that couldn&apos;t scale. Most agencies
-                ship a visual shell, collect a final payment, and disappear—leaving businesses to
-                manage fragmented spreadsheets, manual workflows, and disconnected software.
+                {site.name} exists for the point where a business has moved forward but its
+                digital presence, workflows or internal systems have not kept pace. What starts
+                as a website problem can reveal something deeper: disconnected tools, manual
+                processes, weak customer journeys or information that is difficult to use.
               </Fade>
               <Fade as="p">
-                We built {site.name} to bridge that exact gap. We don&apos;t just build
-                high-conversion web platforms; we architect the underlying custom software,
-                automated business systems, data analytics, and AI workflows that power actual
-                day-to-day operations.
-              </Fade>
-              <Fade as="p">
-                By uniting modern web engineering with data science, we ensure every system we
-                ship is modular, automated, and built to adapt as your company grows.
+                We work from the business problem outward. Sometimes the right answer is a
+                better website. Sometimes it is software, automation, analytics or a more
+                connected internal system. The goal is not to add complexity, but to build what
+                the business actually needs next.
               </Fade>
             </div>
           </div>
@@ -73,8 +69,8 @@ export default function AboutPage() {
           <SectionHeader
             index="02"
             label="Operating Principles"
-            lines={["Operating standards", "engineered for long-term", "system health."]}
-            description="These are not generic agency values on a wall. Every rule directly governs how we architect software, structure databases, and stay embedded with clients post-launch."
+            lines={["Principles that shape", "how we work, not just", "how we present ourselves."]}
+            description="These principles guide how we make decisions, structure engagements and build for what the business actually needs. They are practical working standards, not statements added for appearance."
           />
 
           <div className="mt-20 grid gap-px border border-hairline bg-hairline sm:grid-cols-2">
@@ -93,14 +89,14 @@ export default function AboutPage() {
         </div>
       </RevealSection>
 
-      {/* ── 02.3 / Experience ──────────────────────────────────────── */}
+      {/* ── 02.3 / In Practice ─────────────────────────────────────── */}
       <RevealSection className="bg-bone">
         <div className="shell py-section">
           <SectionHeader
             index="03"
-            label="Experience"
-            lines={["Built one engagement", "at a time."]}
-            description="A running record of the studio itself — from founding through the systems currently in production."
+            label="In Practice"
+            lines={["Built through real work,", "one engagement at a time."]}
+            description="Riem Labs is still early in its story. Rather than manufacture a long company history, this section records the work, capabilities and operating patterns being built through real engagements in 2026."
           />
 
           <div className="mt-20">
@@ -115,8 +111,8 @@ export default function AboutPage() {
           <SectionHeader
             index="04"
             label="Process"
-            lines={["How we engineer", "and evolve your", "digital infrastructure."]}
-            description="We eliminate black-box development. Every phase has defined milestones, clear code previews, and direct post-launch support to adapt as your business expands."
+            lines={["A clear process, shaped", "around the problem", "at hand."]}
+            description="We keep the process visible from the start, with clear decisions, working previews and direct communication throughout. The exact path depends on the project, but the principle stays the same: understand first, build deliberately, and evolve only where it adds real value."
           />
 
           <div className="mt-20 grid gap-x-gutter gap-y-14 md:grid-cols-4">
@@ -139,8 +135,9 @@ export default function AboutPage() {
       <CTABanner
         index="05"
         label="Contact"
-        lines={["Let's engineer your", "next digital milestone."]}
-        note="Whether you need a high-conversion web platform or an integrated data and automation system, we're ready to help you plan the roadmap. Tell us what you're building, and we'll outline a direct path forward within 24 hours."
+        lines={["Bring us the problem.", "We’ll help define", "what comes next."]}
+        note="Whether you need a stronger digital presence, a better customer journey or a more capable internal system, start with what the business needs to solve. We’ll help shape the right next step from there."
+        cta="Start a conversation"
       />
     </>
   );
