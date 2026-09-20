@@ -106,107 +106,121 @@ export default function HeaderBar({
   //   position and every viewport width because the inset is the same clamp
   //   the gutter itself uses.
   return (
+    // Two elements, not one. The white/accent field is the page-wide
+    // surface and must run edge to edge; only the row inside it is held to
+    // the shared content axes. Carrying both on a single element made the
+    // background itself 112rem wide, leaving the page showing down either
+    // side of the bar.
     <div
-      className={`relative mx-auto flex h-[var(--header-h)] w-full max-w-grid items-center justify-between gap-6 px-gutter after:absolute after:bottom-0 after:left-gutter after:right-gutter after:h-px after:content-[''] ${
-        isReveal ? "bg-accent after:bg-mist/25" : "bg-mist after:bg-hairline"
+      className={`relative h-[var(--header-h)] w-full ${
+        isReveal ? "bg-accent" : "bg-mist"
       }`}
     >
-      {isReveal ? (
-        <span className="flex items-center">
-          {/* brightness-0 invert renders the mark and wordmark pure white. */}
-          <Image
-            src={logoSrc}
-            alt=""
-            priority
-            className="h-7 w-auto brightness-0 invert sm:h-8"
-          />
-        </span>
-      ) : (
-        <Link
-          href="/"
-          aria-label={`${site.name} — home`}
-          onClick={onLogoClick}
-          className="flex items-center"
-        >
-          <Image
-            src={logoSrc}
-            alt={site.name}
-            priority
-            data-header-logo=""
-            className="h-7 w-auto sm:h-8"
-          />
-        </Link>
-      )}
-
-      <div className="flex flex-col items-end">
-        {/* The mirror carries the same state attributes as the real control,
-            because the stylesheet drives the marker off them — without these
-            the reveal copy would sit in its resting grid while the base copy
-            animated, and the band would show the two disagreeing. */}
+      {/* The hairline starts and stops on the same margin as the wordmark,
+          so it belongs to this inner, axis-aligned row rather than to the
+          full-width field behind it. */}
+      <div
+        className={`relative mx-auto flex h-full w-full max-w-grid items-center justify-between gap-6 px-gutter after:absolute after:bottom-0 after:left-gutter after:right-gutter after:h-px after:content-[''] ${
+          isReveal ? "after:bg-mist/25" : "after:bg-hairline"
+        }`}
+      >
         {isReveal ? (
-          <span
-            data-menu-state={open ? "open" : "closed"}
-            data-menu-origin={origin}
-            data-overlay-control=""
-            className={toggleClass}
-          >
-            {menuLabel}
-            {icon}
+          <span className="flex items-center">
+            {/* brightness-0 invert renders the mark and wordmark pure white. */}
+            <Image
+              src={logoSrc}
+              alt=""
+              priority
+              className="h-7 w-auto brightness-0 invert sm:h-8"
+            />
           </span>
         ) : (
-          <button
-            ref={buttonRef}
-            type="button"
-            /* Two attributes, not one: the flag says "this is an anchor", the
-               name says which. The pointer-band driver matches on the flag. */
-            data-reveal-anchor=""
-            data-reveal-anchor-name="menu"
-            data-overlay-control=""
-            data-nav-toggle=""
-            data-menu-state={open ? "open" : "closed"}
-            data-menu-origin={origin}
-            onClick={onToggle}
-            onPointerEnter={() => onAnchor?.(true)}
-            onPointerLeave={() => onAnchor?.(false)}
-            onFocus={(e) => {
-              if (e.currentTarget.matches(":focus-visible")) onAnchor?.(true);
-            }}
-            onBlur={() => onAnchor?.(false)}
-            aria-expanded={open}
-            aria-controls="menu-drawer"
-            className={toggleClass}
+          <Link
+            href="/"
+            aria-label={`${site.name} — home`}
+            onClick={onLogoClick}
+            className="flex items-center"
           >
-            {menuLabel}
-            {icon}
-          </button>
+            <Image
+              src={logoSrc}
+              alt={site.name}
+              priority
+              data-header-logo=""
+              className="h-7 w-auto sm:h-8"
+            />
+          </Link>
         )}
 
-      </div>
+        <div className="flex flex-col items-end">
+          {/* The mirror carries the same state attributes as the real control,
+              because the stylesheet drives the marker off them — without these
+              the reveal copy would sit in its resting grid while the base copy
+              animated, and the band would show the two disagreeing. */}
+          {isReveal ? (
+            <span
+              data-menu-state={open ? "open" : "closed"}
+              data-menu-origin={origin}
+              data-overlay-control=""
+              className={toggleClass}
+            >
+              {menuLabel}
+              {icon}
+            </span>
+          ) : (
+            <button
+              ref={buttonRef}
+              type="button"
+              /* Two attributes, not one: the flag says "this is an anchor", the
+                 name says which. The pointer-band driver matches on the flag. */
+              data-reveal-anchor=""
+              data-reveal-anchor-name="menu"
+              data-overlay-control=""
+              data-nav-toggle=""
+              data-menu-state={open ? "open" : "closed"}
+              data-menu-origin={origin}
+              onClick={onToggle}
+              onPointerEnter={() => onAnchor?.(true)}
+              onPointerLeave={() => onAnchor?.(false)}
+              onFocus={(e) => {
+                if (e.currentTarget.matches(":focus-visible")) onAnchor?.(true);
+              }}
+              onBlur={() => onAnchor?.(false)}
+              aria-expanded={open}
+              aria-controls="menu-drawer"
+              className={toggleClass}
+            >
+              {menuLabel}
+              {icon}
+            </button>
+          )}
 
-      {/* Availability note.
-          Positioned against the ROW rather than the toggle, so it clears the
-          rule instead of straddling it — it belongs to the band between the
-          bar and the page, on the same right margin the rule ends on.
+        </div>
 
-          It is a hero detail, so it appears on the index page only, and only
-          while the page is at rest at the top: that band is empty just long
-          enough for it, and left standing it would sit on top of whatever body
-          copy happened to be passing under the rule. */}
-      {showAvailability ? (
-        <span
-          className={`pointer-events-none absolute right-gutter top-full mt-3 hidden items-center gap-2 whitespace-nowrap transition-opacity duration-400 ease-expo sm:inline-flex ${
-            atTop ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        {/* Availability note.
+            Positioned against the ROW rather than the toggle, so it clears the
+            rule instead of straddling it — it belongs to the band between the
+            bar and the page, on the same right margin the rule ends on.
+
+            It is a hero detail, so it appears on the index page only, and only
+            while the page is at rest at the top: that band is empty just long
+            enough for it, and left standing it would sit on top of whatever body
+            copy happened to be passing under the rule. */}
+        {showAvailability ? (
           <span
-            data-header-mark={isReveal ? undefined : ""}
-            className={`h-1.5 w-1.5 rounded-full animate-pulse-dot ${badgeDot}`}
-          />
-          <span data-header-tone={isReveal ? undefined : ""} className={`micro ${badgeTone}`}>
-            Available for Hire
+            className={`pointer-events-none absolute right-gutter top-full mt-3 hidden items-center gap-2 whitespace-nowrap transition-opacity duration-400 ease-expo sm:inline-flex ${
+              atTop ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span
+              data-header-mark={isReveal ? undefined : ""}
+              className={`h-1.5 w-1.5 rounded-full animate-pulse-dot ${badgeDot}`}
+            />
+            <span data-header-tone={isReveal ? undefined : ""} className={`micro ${badgeTone}`}>
+              Available for Hire
+            </span>
           </span>
-        </span>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 }
