@@ -22,7 +22,7 @@ export default function AboutPage() {
       <PageIntro
         index="02"
         label="Studio"
-        lines={["Built around how the business", "actually works."]}
+        lines={["Built around how", "the business", "actually works."]}
         lede="Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems. We start by understanding the business, then shape the right combination of design, software and operational tooling around what it actually needs."
         showClock={false}
         tighterTop
@@ -73,6 +73,7 @@ export default function AboutPage() {
           <SectionHeader
             index="02"
             label="Operating Principles"
+            wideSupport
             lines={["Principles that shape", "how we work, not just", "how we present ourselves."]}
             description="These principles guide how we make decisions, structure engagements and build for what the business actually needs. They are practical working standards, not statements added for appearance."
           />
@@ -99,6 +100,7 @@ export default function AboutPage() {
           <SectionHeader
             index="03"
             label="In Practice"
+            wideSupport
             lines={["Built through real work,", "one engagement at a time."]}
             description="Riem Labs is still early in its story. Rather than manufacture a long company history, this section records the work, capabilities and operating patterns being built through real engagements in 2026."
           />

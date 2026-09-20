@@ -12,9 +12,10 @@ import { projects, type Project } from "@/lib/projects";
  *
  * The category filter bar it used to open with is gone: with a public index
  * this small, every filter was either "all of them" or "one of them", and the
- * control cost more attention than it saved. The rule that framed the grid
- * stays, now carrying only the count — so the section keeps its top edge and
- * the grid below it is unchanged.
+ * control cost more attention than it saved. The hairline rule and project
+ * count that used to frame the grid are gone too — 01 / Index already reads
+ * as the section's own header, and a second rule immediately under it plus
+ * a "3 projects" line only restated what the grid makes obvious by itself.
  */
 export default function WorkGallery() {
   const [preview, setPreview] = useState<Project | null>(null);
@@ -60,15 +61,9 @@ export default function WorkGallery() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-3 border-y border-hairline py-5">
-        <p className="meta ml-auto text-ink/35">
-          {projects.length} {projects.length === 1 ? "project" : "projects"}
-        </p>
-      </div>
-
       <div
         ref={gridRef}
-        className="mt-16 grid gap-x-gutter gap-y-20 sm:grid-cols-2 lg:grid-cols-3"
+        className="mt-10 grid gap-x-gutter gap-y-20 sm:grid-cols-2 lg:grid-cols-3"
       >
         {projects.map((project) => (
           <ProjectCard

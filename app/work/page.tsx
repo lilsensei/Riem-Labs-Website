@@ -7,7 +7,7 @@ import SectionHeader from "@/components/SectionHeader";
 import WorkGallery from "@/components/WorkGallery";
 import { Fade } from "@/components/RevealText";
 import { CHOREO_OFFSETS, choreographyPool } from "@/lib/glyphChoreographies";
-import { categories, projects } from "@/lib/projects";
+import { industries, projects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -32,7 +32,7 @@ export default function WorkPage() {
         meta={[
           { label: "Projects", value: `${projects.length} in the public index` },
           { label: "Year", value: span },
-          { label: "Categories", value: `${categories.length} disciplines` },
+          { label: "Categories", value: `${industries.length} disciplines` },
           { label: "Status", value: "Mixed project types" },
         ]}
       />
@@ -45,10 +45,18 @@ export default function WorkPage() {
       </RevealSection>
 
       <RevealSection className="bg-bone">
-        <div className="shell py-section">
+        {/* Same tightened bottom used on About's Process → Contact seam: this
+            section also runs straight into the black Contact CTA, and measured
+            158px at 1920 before this — the exact figure About's Process→Contact
+            gap started at. The Index→Engagement seam above stays untouched: two
+            different-background content sections in sequence, not a run into
+            the CTA, which is the same distinction About's Story→Principles
+            seam draws by staying untouched too. */}
+        <div className="shell py-section pb-[clamp(3.5rem,5.5vw,5.5rem)]">
           <SectionHeader
             index="02"
             label="Engagement"
+            wideSupport
             lines={["Not every problem", "looks like a", "public-facing website."]}
             description="Some projects begin with a visible customer experience. Others start deeper inside the business, with a workflow, internal tool, data problem or system that needs to work better. Our public work shows only part of what we can build."
           />

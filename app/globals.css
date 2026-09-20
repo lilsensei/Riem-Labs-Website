@@ -234,8 +234,10 @@
     opacity: 1;
   }
   /* The drawer owns the screen while open, the same way it suppresses the
-     hero band. */
-  html[data-menu-open="true"] .site-scrollbar {
+     hero band. A project preview does too — same reasoning, different
+     trigger. */
+  html[data-menu-open="true"] .site-scrollbar,
+  html[data-preview-open="true"] .site-scrollbar {
     opacity: 0;
     pointer-events: none;
   }
@@ -264,6 +266,24 @@
   }
   html[data-scrollbar-dragging="true"] .site-scrollbar__thumb {
     cursor: grabbing;
+  }
+
+  /* ---- Project preview backdrop -----------------------------------------
+     A genuine blur, not an opaque cover: the page behind stays recognisable
+     while the panel in front of it stays crisp and dominant. The `@supports`
+     fallback only matters to a browser that ignores `backdrop-filter`
+     entirely — there the tint alone has to do the whole job of separating
+     the panel from the page, so it goes dark enough to read as a real
+     scrim instead of a faint wash sitting over legible body text. */
+  .preview-backdrop {
+    background: rgb(13 13 13 / 0.28);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .preview-backdrop {
+      background: rgb(13 13 13 / 0.72);
+    }
   }
 
   /* ---- Legal disclosure panels ----------------------------------------

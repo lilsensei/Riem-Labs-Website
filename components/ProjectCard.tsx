@@ -75,7 +75,7 @@ export default function ProjectCard({
           {/* One descriptor, not two. The old row carried the client name
               beside the project name, which for most of these is the same
               words twice; what earns the column is what the client does. */}
-          <p className="meta col-span-10 text-ink/45 md:col-span-3">{project.category}</p>
+          <p className="meta col-span-10 text-ink/45 md:col-span-3">{project.industry}</p>
 
           <div className="col-span-2 flex items-center justify-end gap-4 md:col-span-2">
             <span className="meta tnum text-ink/35">{project.year}</span>
@@ -131,7 +131,7 @@ export default function ProjectCard({
         >
           {plate}
         </button>
-      ) : (
+      ) : project.href ? (
         <a
           href={project.href}
           target="_blank"
@@ -140,21 +140,35 @@ export default function ProjectCard({
         >
           {plate}
         </a>
+      ) : (
+        <div className={plateClass}>{plate}</div>
       )}
 
       <div className="mt-5 flex items-start justify-between gap-6">
         <div>
           <h3 className="text-title font-medium">
-            <a
-              href={project.href}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="transition-colors duration-400 ease-expo hover:text-accent group-hover:text-accent"
-            >
-              {project.title}
-            </a>
+            {onPreview ? (
+              <button
+                type="button"
+                onClick={() => onPreview(project)}
+                className="text-left transition-colors duration-400 ease-expo hover:text-accent group-hover:text-accent"
+              >
+                {project.title}
+              </button>
+            ) : project.href ? (
+              <a
+                href={project.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="transition-colors duration-400 ease-expo hover:text-accent group-hover:text-accent"
+              >
+                {project.title}
+              </a>
+            ) : (
+              project.title
+            )}
           </h3>
-          <p className="meta mt-2 text-ink/45">{project.client}</p>
+          <p className="meta mt-2 text-ink/45">{project.industry}</p>
         </div>
         <span className="meta tnum shrink-0 text-ink/35">{project.year}</span>
       </div>
@@ -164,7 +178,7 @@ export default function ProjectCard({
       </p>
 
       <ul className="mt-5 flex flex-wrap gap-2">
-        {project.stack.map((tag) => (
+        {project.technology.map((tag) => (
           <li
             key={tag}
             className="micro border border-hairline px-2 py-1 text-ink/50 transition-colors duration-400 ease-expo group-hover:border-accent/30"
@@ -173,9 +187,9 @@ export default function ProjectCard({
           </li>
         ))}
         {/* Status flag, not a tech tag — filled solid instead of outlined so
-            it reads as distinct from the stack row it shares. */}
+            it reads as distinct from the technology row it shares. */}
         <li className="micro bg-accent px-2 py-1 text-canvas">
-          {project.status === "live" ? "Live" : "Template"}
+          {project.status === "live" ? "Live" : "Concept"}
         </li>
       </ul>
     </article>
