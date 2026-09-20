@@ -6,7 +6,13 @@ import DataRain from "@/components/DataRain";
 import SocialIcon from "@/components/SocialIcon";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 import { services } from "@/lib/services";
-import { legalLinks, navigation, site, socials } from "@/lib/site";
+import { legalLinks, navigation, site, socials, WHATSAPP_ENQUIRY, whatsappHref } from "@/lib/site";
+
+// Footer's own selection and order; the Contact page renders the full list.
+const FOOTER_SOCIALS = (["linkedin", "instagram", "whatsapp"] as const).map((icon) => {
+  const s = socials.find((x) => x.icon === icon)!;
+  return icon === "whatsapp" ? { ...s, href: whatsappHref(WHATSAPP_ENQUIRY) } : s;
+});
 
 /**
  * One column of the right-hand navigation grid.
@@ -92,38 +98,20 @@ export default function Footer() {
               </p>
 
               {/* Authored lines, not measured ones — same convention the
-                  reveal headings use elsewhere (see README). A width-driven
-                  wrap can land the break wherever the container happens to
-                  be at a given viewport; this pins it at "the" every time —
-                  which needs `text-3xl` at mobile sizes specifically, not
-                  the larger arbitrary value this used to carry: at that
-                  size "Engineered systems for the" was itself too wide for
-                  a narrow column and wrapped a second time on its own,
-                  4 lines total instead of the intended 3.
-                  `hyphens-none break-keep` stops CSS's automatic
-                  hyphenation, but the "-" already sitting inside
-                  "performance-obsessed." is a real character, not a
-                  hyphenation point, so it's still a valid soft-wrap
-                  opportunity at narrow widths — a `whitespace-nowrap` here
-                  used to suppress that too, which on a narrow phone forced
-                  the line (and the whole page) 52px wider than its own
-                  container. Left to wrap normally, it reads as three lines
-                  at that width: "...the" / "performance-" / "obsessed."
-
-                  Sized as an arbitrary value rather than jumping a full
-                  Tailwind step (5xl → 6xl is 48px → 60px, a 25% jump) — a
-                  smaller, deliberate bump that stays clear of the width this
-                  row actually has left after widening the nav columns. */}
-              <h2 className="mt-5 text-3xl font-medium leading-none tracking-[-0.035em] hyphens-none break-keep lg:text-[3.25rem]">
-                <span className="block">Engineered systems for the</span>
-                <span className="block">performance-obsessed.</span>
+                  reveal headings use elsewhere (see README), so the break
+                  lands after the comma at every width. Never `whitespace-nowrap`:
+                  on a narrow phone that forced the page wider than the
+                  viewport. `text-3xl` on mobile keeps each line to one row. */}
+              <h2 className="mt-5 text-balance text-3xl font-medium leading-none tracking-[-0.035em] hyphens-none break-keep lg:text-[3.25rem]">
+                <span className="block">Designed around the business,</span>
+                <span className="block">not just the brief.</span>
               </h2>
 
               {/* Pure marks, no bounding box — resting a fixed distance
                   under the headline rather than pinned to any shared row
                   bottom. */}
               <ul className="mt-8 flex items-center gap-5">
-                {socials.map((s) => (
+                {FOOTER_SOCIALS.map((s) => (
                   <li key={s.label}>
                     <a
                       href={s.href}
@@ -153,7 +141,7 @@ export default function Footer() {
               {services.map((s) => (
                 <li key={s.index}>
                   <Link href="/services" className={linkClass}>
-                    {s.title}
+                    {s.label}
                   </Link>
                 </li>
               ))}

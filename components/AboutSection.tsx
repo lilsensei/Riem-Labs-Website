@@ -5,10 +5,10 @@ import { services } from "@/lib/services";
 import { site } from "@/lib/site";
 import type { ElementType, ReactNode } from "react";
 
-const STATS = [
-  { value: "5+", label: "Years Experience" },
-  { value: "10+", label: "Projects Shipped" },
-  { value: "0", label: "Missed Deadlines" },
+const FACTS = [
+  { value: "2026", label: "Founded" },
+  { value: "Nairobi", label: "Kenya" },
+  { value: "Independent", label: "Digital Practice" },
 ];
 
 type Variant = "base" | "reveal" | "trail";
@@ -116,28 +116,38 @@ export default function AboutSection({
           {/* ── Left: copy, stats, CTA ─────────────────────────────── */}
           <div className="lg:col-span-3">
             <Block as="h2" className={`max-w-[22ch] text-headline font-medium ${headTone}`}>
-              Bridging editorial visual direction with production-grade engineering.
+              For businesses that have grown beyond the systems they started with.
             </Block>
 
             <Block as="p" className={`mt-8 max-w-intro text-lede ${bodyTone}`}>
-              Based in Nairobi, Riem Labs crafts high-fidelity digital platforms and scalable
-              software architectures. We build digital assets designed for exceptional user
-              experience, speed, and long-term utility.
+              Riem Labs works with growing businesses whose digital presence or internal systems
+              no longer reflect where the business is today. We design and build the experiences,
+              software and workflows needed to close that gap and support what comes next.
             </Block>
 
-            <Block className={`mt-14 grid grid-cols-3 border-t ${ruleTone}`}>
-              {STATS.map((stat, i) => (
+            {/* The values are words as well as figures, so from `sm` up the
+                size is derived from the column width (cqi) until the longest,
+                "Independent", fits a third of it; all three share that size.
+                On a phone a third is too narrow for any legible size, so each
+                fact becomes a row: value left, label right. */}
+            <Block
+              className={`mt-14 grid border-t [container-type:inline-size] sm:grid-cols-3 ${ruleTone}`}
+            >
+              {FACTS.map((fact, i) => (
                 <div
-                  key={stat.label}
-                  className={`py-8 ${i > 0 ? `border-l pl-6 ${ruleTone}` : "pr-6"}`}
+                  key={fact.label}
+                  className={`flex items-center justify-between gap-6 py-5 sm:block sm:py-8 ${
+                    i > 0 ? `border-t sm:border-l sm:border-t-0 sm:pl-6 ${ruleTone}` : "sm:pr-6"
+                  }`}
                 >
                   <p
-                    className={`font-medium tracking-[-0.03em] ${statTone}`}
-                    style={{ fontSize: "clamp(2.2rem, 3.5vw, 3.2rem)", lineHeight: "1" }}
+                    className={`whitespace-nowrap text-[1.75rem] font-medium leading-none tracking-[-0.03em] sm:text-[clamp(1.75rem,calc(5.2cqi_-_4px),3.2rem)] ${statTone}`}
                   >
-                    {stat.value}
+                    {fact.value}
                   </p>
-                  <p className={`micro mt-4 ${statLabel}`}>{stat.label}</p>
+                  <p className={`micro max-w-[9rem] text-right sm:mt-4 sm:max-w-none sm:text-left ${statLabel}`}>
+                    {fact.label}
+                  </p>
                 </div>
               ))}
             </Block>
@@ -191,7 +201,7 @@ export default function AboutSection({
                 {services.map((service) => (
                   <li key={service.index} className="flex items-center gap-4 text-sm">
                     <span aria-hidden="true" className="h-px w-4 shrink-0 bg-accent" />
-                    <span className={cardBody}>{service.title}</span>
+                    <span className={cardBody}>{service.label}</span>
                   </li>
                 ))}
               </ul>

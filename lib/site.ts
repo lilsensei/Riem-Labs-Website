@@ -37,9 +37,20 @@ export const legalLinks = [
   { label: "Refund Policy", href: "/refund" },
 ];
 
+/** The WhatsApp-reachable business line (distinct from the calls-only `site.phone`). */
+const WHATSAPP_NUMBER = "254790775636";
+
+export const WHATSAPP_ENQUIRY = "Hello Riem Labs, I'd like to talk about a project.";
+
+/** wa.me link, optionally opening the chat with `message` already typed. */
+export function whatsappHref(message?: string) {
+  const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
 /** `icon` keys the inline mark the footer draws for each. */
 export const socials = [
-  { label: "WhatsApp", href: "https://wa.me/254790775636", icon: "whatsapp" },
+  { label: "WhatsApp", href: whatsappHref(), icon: "whatsapp" },
   { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
   { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
   { label: "GitHub", href: "https://github.com", icon: "github" },

@@ -6,7 +6,7 @@ import LogoMarquee from "@/components/LogoMarquee";
 import ProjectCard from "@/components/ProjectCard";
 import SectionWipe from "@/components/SectionWipe";
 import ServiceCard from "@/components/ServiceCard";
-import StatsBar from "@/components/StatsBar";
+import ApproachStrip from "@/components/ApproachStrip";
 import RevealSection from "@/components/RevealSection";
 import SectionHeader from "@/components/SectionHeader";
 import { Fade } from "@/components/RevealText";
@@ -30,8 +30,8 @@ export default function HomePage() {
         <AboutSection />
       </SectionWipe>
 
-      {/* ── Stats strip ────────────────────────────────────────────── */}
-      <StatsBar />
+      {/* ── Approach strip ─────────────────────────────────────────── */}
+      <ApproachStrip />
 
       {/* ── 03 / Work ──────────────────────────────────────────────── */}
       <RevealSection id="work" className="bg-bone">
@@ -39,8 +39,8 @@ export default function HomePage() {
           <SectionHeader
             index="03"
             label="Work"
-            lines={["Proven in production.", "Built for growth."]}
-            description="A curated selection of custom web platforms and design systems — engineered for visual distinction, high performance, and real business impact."
+            lines={["Selected work, shaped around", "real business needs."]}
+            description="A selection of websites, digital products and systems that show how Riem approaches different business problems, from customer-facing experiences to the workflows behind them."
           />
 
           <div className="mt-20 border-t border-hairline">
@@ -71,8 +71,8 @@ export default function HomePage() {
           <SectionHeader
             index="04"
             label="Services"
-            lines={["Tailored digital solutions,", "engineered to endure."]}
-            description="From targeted high-impact deliverables to full-scale platform infrastructure, we engineer digital solutions across the spectrum — built with precision, performance, and long-term utility."
+            lines={["The right system for the", "problem in front of you."]}
+            description="From focused websites and digital products to internal systems, automation, analytics and intelligent workflows, we build around what the business actually needs and keep the solution as simple as the problem allows."
           />
 
           <div className="mt-20 grid gap-px border border-hairline bg-hairline sm:grid-cols-2">
@@ -92,7 +92,12 @@ export default function HomePage() {
       </RevealSection>
 
       {/* ── 05 / Contact ───────────────────────────────────────────── */}
-      <CTABanner id="contact" />
+      <CTABanner
+        id="contact"
+        lines={["Start with the problem.", "We’ll work out", "what it needs."]}
+        note="Whether you have a clear brief or an early idea, tell us what the business needs to solve. We’ll help define the right next step and keep the process straightforward from the start."
+        cta="Start a conversation"
+      />
     </>
   );
 }

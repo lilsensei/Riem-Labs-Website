@@ -1,6 +1,9 @@
 export type Service = {
   index: string;
   title: string;
+  /** Capability name used in the home About card and the footer. Separate from
+   *  `title`, which also drives the Services page and its deep-link slugs. */
+  label: string;
   short: string;
   body: string;
   deliverables: string[];
@@ -24,6 +27,7 @@ export const services: Service[] = [
   {
     index: "01",
     title: "Web & Software Development",
+    label: "Websites & Digital Products",
     short: "Business-critical platforms, built to convert and built to last.",
     body:
       "Modern business websites, high-conversion B2B platforms, e-commerce engines, and bespoke custom web applications — engineered around the workflows the enterprise already runs on, not the other way around.",
@@ -40,6 +44,7 @@ export const services: Service[] = [
   {
     index: "02",
     title: "Business Systems & Automation",
+    label: "Business Systems & Automation",
     short: "The manual work your team shouldn't still be doing by hand.",
     body:
       "End-to-end workflow automation, custom backend databases, internal administrative dashboards, and third-party API integrations — built to remove the busywork between your systems, not add another one.",
@@ -56,6 +61,7 @@ export const services: Service[] = [
   {
     index: "03",
     title: "Data Science & Analytics",
+    label: "Data & Analytics",
     short: "Decisions made from evidence, not instinct.",
     body:
       "Business intelligence dashboards, data cleaning pipelines, customer and sales analytics, and predictive modelling — turning whatever your systems already collect into decisions you can act on.",
@@ -72,6 +78,7 @@ export const services: Service[] = [
   {
     index: "04",
     title: "AI & Intelligent Solutions",
+    label: "AI & Intelligent Workflows",
     short: "AI that does the work, not just the demo.",
     body:
       "Tailored AI assistants, document intelligence systems, automated lead qualification, and intelligent workflow automation — built on production-grade architecture, not a prompt bolted onto your site.",

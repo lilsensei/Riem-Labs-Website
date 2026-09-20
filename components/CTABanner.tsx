@@ -8,8 +8,9 @@ type CTABannerProps = {
   id?: string;
   index?: string;
   label?: string;
-  lines?: string[];
-  note?: string;
+  lines: string[];
+  note: string;
+  cta?: string;
 };
 
 /* A touch smaller than the site's general `text-display` scale, and the
@@ -24,8 +25,9 @@ export default function CTABanner({
   id,
   index = "05",
   label = "Contact",
-  lines = ["Let's build the", "next one together."],
-  note = "Whether you have a detailed brief or an early concept, tell us what you're building. We'll review your goals and provide a straightforward path forward within 24 hours.",
+  lines,
+  note,
+  cta = "Start a project",
 }: CTABannerProps) {
   return (
     <RevealSection id={id} className="bg-ink text-canvas">
@@ -43,7 +45,7 @@ export default function CTABanner({
           <RevealLines
             as="h2"
             lines={lines}
-            className={`${HEADLINE_CLASS} font-medium md:col-span-9`}
+            className={`${HEADLINE_CLASS} text-balance font-medium md:col-span-9`}
           />
 
           <div className="flex flex-col justify-end gap-8 md:col-span-3">
@@ -53,7 +55,7 @@ export default function CTABanner({
 
             <Fade className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <BracketLink href="/contact" variant="boxed" size="lg" tone="dark">
-                Start a project
+                {cta}
               </BracketLink>
             </Fade>
           </div>

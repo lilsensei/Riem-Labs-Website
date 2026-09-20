@@ -3,10 +3,10 @@ import LiveClock from "@/components/LiveClock";
 import { navigation } from "@/lib/site";
 
 export const HERO_HEADLINE =
-  "Digital presence, built to last — from first design to long-term growth.";
+  "Built around how your business works, and where it is going.";
 
 export const HERO_INTRO =
-  "An independent digital practice shaping product thinking, visual direction and technical execution into working systems.";
+  "Riem Labs designs and builds websites, digital products and business systems around real operational needs, from what customers see to what keeps the business moving.";
 
 /**
  * Hero content, rendered twice.
@@ -63,7 +63,7 @@ export default function HeroContent({ variant }: { variant: "base" | "reveal" })
           </p>
 
           <Heading
-            className={`hero-rise hero-headline ${headingTone}`}
+            className={`hero-rise hero-headline text-balance ${headingTone}`}
             style={{ animationDelay: "0.08s", maxWidth: "var(--hero-headline-max-width)" }}
           >
             {HERO_HEADLINE}

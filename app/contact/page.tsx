@@ -16,6 +16,9 @@ export const metadata: Metadata = {
 /** The Direct block's real inbox — deliberately not site.email, which is
  *  the legal pages' address. See the block below for why. */
 const CONTACT_EMAIL = "riemlabs@gmail.com";
+/** GitHub is a working tool, not a public channel — the footer omits it too. */
+const PUBLIC_SOCIALS = socials.filter((s) => s.icon !== "github");
+
 /** The WhatsApp-reachable number, local to this page — site.phone is calls-only. */
 const SECONDARY_PHONE = "+254 790 775 636";
 
@@ -111,7 +114,7 @@ export default function ContactPage() {
                   <Fade>
                     <dt className="meta text-ink/60">Elsewhere</dt>
                     <dd className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
-                      {socials.map((s) => (
+                      {PUBLIC_SOCIALS.map((s) => (
                         <a
                           key={s.label}
                           href={s.href}

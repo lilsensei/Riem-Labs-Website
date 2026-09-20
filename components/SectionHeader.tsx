@@ -49,7 +49,7 @@ export default function SectionHeader({
             <RevealLines
               as="h2"
               lines={lines}
-              className="text-[clamp(2rem,3.9vw,4.5rem)] font-medium leading-none tracking-[-0.035em] md:col-span-8 lg:col-span-9"
+              className="text-balance text-[clamp(2rem,3.9vw,4.5rem)] font-medium leading-none tracking-[-0.035em] md:col-span-8 lg:col-span-9"
             />
           ) : null}
 
