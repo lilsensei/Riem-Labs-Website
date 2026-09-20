@@ -8,8 +8,10 @@ function quarterOf(date: Date) {
 }
 
 /**
- * "Q_ YYYY — slots open", computed from the real date on mount so it
- * advances on its own each quarter instead of needing a manual copy edit.
+ * The current quarter, computed from the real date on mount so it advances
+ * on its own instead of needing a manual copy edit. It sits under the
+ * "Available for select projects" badge as plain context — the old
+ * "— slots open." suffix read as a capacity promise the studio has not made.
  * The page is statically rendered, so a value computed during the server
  * render would stay frozen at build time — this reads the visitor's actual
  * clock in the browser instead, which is why it's a client component rather
@@ -24,7 +26,7 @@ export default function AvailabilityLine() {
 
   return (
     <p className="mt-4 text-sm leading-relaxed text-ink/55">
-      <span suppressHydrationWarning>{label}</span> — slots open.
+      <span suppressHydrationWarning>{label}</span>
     </p>
   );
 }

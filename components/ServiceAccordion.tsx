@@ -88,7 +88,7 @@ function AccordionRow({
               open ? "text-accent" : ""
             }`}
           >
-            {service.title}
+            {service.label}
           </span>
 
           <span className="col-span-12 col-start-3 text-sm text-ink/50 transition-colors duration-400 ease-expo group-hover:text-accent md:col-span-4 md:col-start-7">

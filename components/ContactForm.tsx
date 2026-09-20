@@ -5,11 +5,12 @@ import BracketLink from "@/components/BracketLink";
 import { site } from "@/lib/site";
 
 const SCOPES = [
-  "Web & Software Development",
+  "Websites & Digital Products",
   "Business Systems & Automation",
-  "Data Science & Analytics",
-  "AI & Intelligent Solutions",
-  "System & Code Audit",
+  "Data & Analytics",
+  "AI & Intelligent Workflows",
+  "Existing System Improvement",
+  "Not sure yet",
 ];
 
 const TIMELINES = [
@@ -229,7 +230,7 @@ export default function ContactForm() {
 
         <label className="block">
           <span className="meta text-ink/40">
-            What are you building, and what operational bottleneck are you trying to solve?
+            Tell us what you’re trying to improve, build or solve.
           </span>
           <textarea
             name="message"
@@ -254,7 +255,7 @@ export default function ContactForm() {
             size="lg"
             disabled={status === "submitting"}
           >
-            {status === "submitting" ? "Sending…" : "Send brief"}
+            {status === "submitting" ? "Sending…" : "Start the conversation"}
           </BracketLink>
 
           {error ? (

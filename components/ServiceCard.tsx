@@ -57,7 +57,7 @@ export default function ServiceCard({
           </span>
         </div>
         <h3 className="mt-8 text-title font-medium transition-colors duration-400 ease-expo group-hover:text-accent">
-          {service.title}
+          {service.label}
         </h3>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink/55">{service.short}</p>
       </div>

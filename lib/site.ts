@@ -5,7 +5,7 @@ export const site = {
   description:
     "Riem Labs is an independent design studio building digital products, interfaces, and web systems — shaped from first idea to working form.",
   email: "hello@riemlabs.com",
-  /** Calls only, not on WhatsApp — the Contact page's Direct block also shows a second, WhatsApp-reachable number. */
+  /** The one published number: calls, and the same line WhatsApp opens. */
   phone: "+254 794 989 397",
   city: "Nairobi",
   country: "Kenya",
@@ -37,10 +37,11 @@ export const legalLinks = [
   { label: "Refund Policy", href: "/refund" },
 ];
 
-/** The WhatsApp-reachable business line (distinct from the calls-only `site.phone`). */
-const WHATSAPP_NUMBER = "254790775636";
+/** The business line, in wa.me's digits-only form — the same number as
+ *  `site.phone`, which is the only number the site now publishes. */
+const WHATSAPP_NUMBER = "254794989397";
 
-export const WHATSAPP_ENQUIRY = "Hello Riem Labs, I'd like to talk about a project.";
+export const WHATSAPP_ENQUIRY = "Hello Riem Labs, I’d like to discuss a project.";
 
 /** wa.me link, optionally opening the chat with `message` already typed. */
 export function whatsappHref(message?: string) {

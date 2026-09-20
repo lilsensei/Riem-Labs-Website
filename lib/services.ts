@@ -1,8 +1,9 @@
 export type Service = {
   index: string;
   title: string;
-  /** Capability name used in the home About card and the footer. Separate from
-   *  `title`, which also drives the Services page and its deep-link slugs. */
+  /** Public display name — what every surface renders. Separate from
+   *  `title`, which is the stable key `serviceSlug()` derives the accordion
+   *  anchor and the home card's deep link from, and so must not change. */
   label: string;
   short: string;
   body: string;
@@ -28,15 +29,15 @@ export const services: Service[] = [
     index: "01",
     title: "Web & Software Development",
     label: "Websites & Digital Products",
-    short: "Business-critical platforms, built to convert and built to last.",
+    short: "Websites and digital products designed to make the business clearer, easier to use and easier to grow.",
     body:
-      "Modern business websites, high-conversion B2B platforms, e-commerce engines, and bespoke custom web applications — engineered around the workflows the enterprise already runs on, not the other way around.",
+      "From focused business websites to customer portals, e-commerce experiences and custom web applications, we design and build around the way the business actually operates. The goal is a digital experience that works well for customers and remains useful as the business evolves.",
     deliverables: [
-      "Marketing & product website builds",
-      "B2B platform and portal development",
-      "E-commerce storefronts and checkout flows",
-      "Custom web application architecture",
-      "Performance and SEO baseline",
+      "Business and product websites",
+      "Customer portals and digital platforms",
+      "E-commerce experiences",
+      "Custom web applications",
+      "Performance and SEO foundations",
     ],
     stack: ["Next.js", "TypeScript", "Tailwind", "React"],
     duration: "4–8 weeks",
@@ -45,15 +46,15 @@ export const services: Service[] = [
     index: "02",
     title: "Business Systems & Automation",
     label: "Business Systems & Automation",
-    short: "The manual work your team shouldn't still be doing by hand.",
+    short: "Less manual work. Better-connected operations.",
     body:
-      "End-to-end workflow automation, custom backend databases, internal administrative dashboards, and third-party API integrations — built to remove the busywork between your systems, not add another one.",
+      "We design internal systems and automated workflows around the tasks your team handles repeatedly. That can mean connecting tools, reducing duplicate work, improving handoffs or building a focused internal system where existing software no longer fits the way the business operates.",
     deliverables: [
-      "Workflow automation & process mapping",
-      "Custom database architecture",
-      "Internal admin dashboards",
-      "Third-party API integrations",
-      "Ongoing systems maintenance",
+      "Workflow automation",
+      "Internal tools and dashboards",
+      "CRM and operational integrations",
+      "Booking, enquiry and approval flows",
+      "Process and system improvements",
     ],
     stack: ["Python", "Node.js", "REST APIs", "PostgreSQL"],
     duration: "3–6 weeks",
@@ -62,15 +63,15 @@ export const services: Service[] = [
     index: "03",
     title: "Data Science & Analytics",
     label: "Data & Analytics",
-    short: "Decisions made from evidence, not instinct.",
+    short: "Turn business data into information people can actually use.",
     body:
-      "Business intelligence dashboards, data cleaning pipelines, customer and sales analytics, and predictive modelling — turning whatever your systems already collect into decisions you can act on.",
+      "We help businesses organise, connect and interpret the data they already generate so teams can see what is happening more clearly. Depending on the need, that can mean dashboards, reporting systems, data pipelines or deeper analysis designed around real operational and commercial questions.",
     deliverables: [
-      "BI dashboards & reporting",
-      "Data cleaning & pipeline builds",
-      "Customer and sales analytics",
-      "Predictive modelling",
-      "Data source integration",
+      "Dashboards and reporting",
+      "Data cleaning and integration",
+      "Operational and commercial analysis",
+      "Automated reporting workflows",
+      "Data pipelines and structured datasets",
     ],
     stack: ["Python", "SQL", "Data Viz", "Predictive"],
     duration: "3–6 weeks",
@@ -79,15 +80,15 @@ export const services: Service[] = [
     index: "04",
     title: "AI & Intelligent Solutions",
     label: "AI & Intelligent Workflows",
-    short: "AI that does the work, not just the demo.",
+    short: "Use AI where it removes real work or improves a real decision.",
     body:
-      "Tailored AI assistants, document intelligence systems, automated lead qualification, and intelligent workflow automation — built on production-grade architecture, not a prompt bolted onto your site.",
+      "We design intelligent workflows around clear business use cases, from assisting teams with repetitive knowledge work to connecting AI with existing systems, data and processes. The goal is practical utility, not adding AI where ordinary software would do the job better.",
     deliverables: [
-      "Custom AI assistants",
-      "Document intelligence systems",
-      "Automated lead qualification",
-      "LLM-powered workflow automation",
-      "Vector search & retrieval infrastructure",
+      "AI-assisted workflows",
+      "Knowledge and document systems",
+      "Internal copilots and support tools",
+      "AI integrations with existing systems",
+      "Process automation with human oversight",
     ],
     stack: ["Claude API", "OpenAI", "LLM Architecture", "Vector DB"],
     duration: "4–8 weeks",
@@ -120,23 +121,23 @@ export const principles = [
 export const process = [
   {
     index: "01",
-    title: "Discovery & System Architecture",
-    body: "We audit your existing workflows, map data schemas, and define system boundaries. Before writing production code, we deliver a concrete architectural blueprint with explicit milestone exit conditions and zero fluff.",
+    title: "Understand the Need",
+    body: "We begin with the business problem, the people involved and the current way things work. This gives us the context to decide what should be improved, replaced or built.",
   },
   {
     index: "02",
-    title: "Dual-Track Execution",
-    body: "Interface engineering and backend infrastructure run in parallel. Instead of waiting weeks for static comps, you interact with working code in a live preview staging environment early in the cycle.",
+    title: "Define the Direction",
+    body: "We shape the right approach across experience, system structure and technical execution, keeping the solution proportionate to the actual problem.",
   },
   {
     index: "03",
-    title: "Hardening & Deployment",
-    body: "Backend APIs, third-party services, data pipelines, and automation flows are fully integrated and stress-tested. We execute security audits, performance tuning, and a seamless production deployment.",
+    title: "Build & Validate",
+    body: "We develop the solution in working stages, test the important flows and integrations, and refine what needs attention before release.",
   },
   {
     index: "04",
-    title: "Autonomous Handover & Evolution",
-    body: "We deliver complete repository ownership, clean documentation, and hands-on team walkthroughs. We leave a system your team can operate independently, while remaining embedded for high-level scaling and feature expansion.",
+    title: "Launch & Support",
+    body: "We prepare the final release, document what matters and support the system after launch where ongoing improvement or maintenance makes sense.",
   },
 ];
 

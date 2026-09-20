@@ -12,30 +12,27 @@ import { process, services } from "@/lib/services";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Web & software development, business systems & automation, data science & analytics, and AI & intelligent solutions — the four ways Riem Labs works with teams.",
+    "Websites & digital products, business systems & automation, data & analytics, and AI & intelligent workflows — the four ways Riem Labs helps businesses move from friction to better systems.",
 };
 
 const ENGAGEMENTS = [
   {
     index: "01",
-    title: "Fixed Project Build",
-    tagline: "Defined scope, guaranteed timeline, complete execution.",
-    body: "End-to-end architecture and build of a custom web platform, automated system, or business application. We define clear milestones from day one and handle everything from schema design to production deployment and post-launch handover.",
-    fit: "Product launches, custom web apps, complete system rebuilds, and automated workflow rollouts.",
+    title: "Defined Project",
+    tagline: "A clear scope, agreed milestones and focused delivery from start to launch.",
+    fit: "New websites, digital products, internal tools, system improvements and clearly defined builds.",
   },
   {
     index: "02",
-    title: "Embedded Capacity (Retainer)",
-    tagline: "Dedicated senior engineering depth without full-time hiring overhead.",
-    body: "Ongoing monthly capacity embedded alongside your team. Operating on a transparent sprint cadence, we handle continuous feature rollouts, database optimization, backend scaling, and AI capabilities as your business grows.",
-    fit: "Fast-moving teams needing continuous technical momentum, system expansion, and ongoing technical advisory.",
+    title: "Ongoing Support",
+    tagline: "Continued design and technical support for products or systems that need regular improvement after launch.",
+    fit: "Teams that need steady iteration, new workflows, maintenance or continued product development without hiring full-time capacity.",
   },
   {
     index: "03",
-    title: "System & Code Audit",
-    tagline: "Diagnostic teardown and actionable technical roadmap.",
-    body: "A focused multi-week audit examining your software architecture, database query bottlenecks, security vulnerabilities, and code quality. We deliver a prioritized, non-jargon remediation blueprint you own outright.",
-    fit: "Fragile or drifting codebases, performance degradation, tech-debt cleanup, or pre-scale system assessments.",
+    title: "System Review",
+    tagline: "A focused review of an existing website, product or internal system to identify what is working, what is getting in the way and what should change next.",
+    fit: "Outdated systems, difficult workflows, performance issues, technical debt or businesses deciding whether to improve, rebuild or replace an existing setup.",
   },
 ];
 
@@ -45,14 +42,14 @@ export default function ServicesPage() {
       <PageIntro
         index="04"
         label="Services"
-        lines={["Digital systems built", "for speed, scale, and", "operational utility."]}
-        lede="Four specialized technical capabilities designed to advance your digital infrastructure. Explore our core offerings across full-stack engineering, workflow automation, data science, and intelligent systems."
+        lines={["Four ways we help", "businesses move", "from friction to", "better systems."]}
+        lede="From websites and digital products to internal systems, analytics and intelligent workflows, each service starts with the problem the business is actually trying to solve."
         showClock={false}
         meta={[
-          { label: "Disciplines", value: "4 core offerings" },
-          { label: "Engagement", value: "Project, retainer, or audit" },
-          { label: "Handover", value: "Documented, always" },
-          { label: "Lead time", value: "4–6 weeks to start" },
+          { label: "Services", value: "4 core areas" },
+          { label: "Engagement", value: "Project or ongoing support" },
+          { label: "Handover", value: "Clear documentation" },
+          { label: "Starting point", value: "Business problem first" },
         ]}
       />
 
@@ -77,8 +74,8 @@ export default function ServicesPage() {
           <SectionHeader
             index="02"
             label="Engagement models"
-            lines={["Flexible engagement", "tailored to your technical", "roadmap."]}
-            description="Every engagement is defined by explicit milestones, clean code delivery, and zero hidden costs. We establish fixed project pricing after initial discovery so you retain total control over your roadmap."
+            lines={["Different problems need", "different ways of working."]}
+            description="Some engagements are best handled as a defined project. Others need ongoing support or a focused review of an existing system. We choose the structure that fits the problem, scope and level of continuity required."
           />
 
           <div className="mt-20 grid gap-px border border-hairline bg-hairline lg:grid-cols-3">
@@ -91,8 +88,7 @@ export default function ServicesPage() {
               >
                 <div>
                   <h3 className="mt-8 text-title font-medium">{model.title}</h3>
-                  <p className="mt-3 text-sm font-medium text-ink/70">{model.tagline}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/55">{model.body}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-ink/70">{model.tagline}</p>
                 </div>
 
                 <div className="border-t border-hairline pt-5">
@@ -111,8 +107,8 @@ export default function ServicesPage() {
           <SectionHeader
             index="03"
             label="Process"
-            lines={["Every engagement follows", "a strict four-stage", "engineering loop."]}
-            description="We eliminate ambiguity and black-box delivery. Every phase has a single defined exit condition agreed upon before code is written, ensuring you interact with live software early and retain complete system ownership."
+            lines={["A clear path from the", "problem to the right", "working solution."]}
+            description="Every engagement starts with understanding what needs to change, then moves through clear decisions, working previews and careful delivery. The exact process adapts to the scope, but the aim stays the same: build deliberately and keep the work visible throughout."
           />
 
           <div className="mt-20 border-t border-hairline">
@@ -139,8 +135,9 @@ export default function ServicesPage() {
       <CTABanner
         index="04"
         label="Contact"
-        lines={["Ready to scope your", "next engineering build?"]}
-        note="Not sure which service line or engagement model fits best? Outline your operational bottleneck or technical requirements, and we'll recommend an exact build structure and transparent estimate within 24 hours."
+        lines={["Not sure what you", "need yet? Start", "with the problem."]}
+        note="You do not need to choose a service before speaking to us. Tell us what is not working, what needs to improve or what you want to build, and we’ll help define the right next step from there."
+        cta="Start a conversation"
       />
     </>
   );
