@@ -39,6 +39,7 @@ export default function HomePage() {
           <SectionHeader
             index="03"
             label="Work"
+            wideSupport
             lines={["Selected work, shaped around", "real business needs."]}
             description="A selection of websites, digital products and systems that show how Riem approaches different business problems, from customer-facing experiences to the workflows behind them."
           />
@@ -67,10 +68,17 @@ export default function HomePage() {
 
       {/* ── 04 / Services ──────────────────────────────────────────── */}
       <RevealSection id="services" className="bg-bone">
-        <div className="shell py-section">
+        {/* Tightened bottom only, matching the seam already approved on
+            About’s Process → Contact and Work’s Engagement → Contact: a
+            standard section running straight into the black CTA. All three
+            measured 158px here before this. The Work → stack strip seam
+            above is left alone — content into content across a background
+            change, the same category as About’s Story → Principles. */}
+        <div className="shell py-section pb-[clamp(3.5rem,5.5vw,5.5rem)]">
           <SectionHeader
             index="04"
             label="Services"
+            wideSupport
             lines={["The right system for the", "problem in front of you."]}
             description="From focused websites and digital products to internal systems, automation, analytics and intelligent workflows, we build around what the business actually needs and keep the solution as simple as the problem allows."
           />
