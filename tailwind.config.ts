@@ -37,8 +37,13 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
-        // Editorial display scale — fluid, tuned for tight grotesk settings.
-        display: ["clamp(2.75rem, 7.4vw, 8.25rem)", { lineHeight: "1", letterSpacing: "-0.045em" }],
+        // Editorial display scale for the interior page mastheads — reached
+        // only through PageIntro. Deliberately a step under the home hero
+        // (--hero-headline-size, its own token): at 1920 that is 128.6px and
+        // this is 112px. The old ceiling put interior heroes ABOVE the home
+        // page at wide desktop, which read as a flat hierarchy. The 2.75rem
+        // floor is unchanged, so phones keep the size they already had.
+        display: ["clamp(2.75rem, 6vw, 7rem)", { lineHeight: "1", letterSpacing: "-0.045em" }],
         // Flush-left hero statement.
         hero: [
           "clamp(2.5rem, 0.75rem + 9.1vw, 5.25rem)",

@@ -22,7 +22,7 @@ export default function AboutPage() {
       <PageIntro
         index="02"
         label="Studio"
-        lines={["Built around how", "the business", "actually works."]}
+        lines={["Built around how the business", "actually works."]}
         lede="Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems. We start by understanding the business, then shape the right combination of design, software and operational tooling around what it actually needs."
         showClock={false}
         tighterTop
@@ -111,7 +111,7 @@ export default function AboutPage() {
 
       {/* ── 02.4 / Process ─────────────────────────────────────────── */}
       <RevealSection className="bg-canvas">
-        <div className="shell py-section pb-[clamp(3.5rem,7.5vw,7.5rem)]">
+        <div className="shell py-section pb-[clamp(3.5rem,5.5vw,5.5rem)]">
           <SectionHeader
             index="04"
             label="Process"

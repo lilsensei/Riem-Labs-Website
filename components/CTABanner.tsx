@@ -18,7 +18,10 @@ type CTABannerProps = {
    give every explicit `.reveal-line` here enough room to render as one
    visual line at this section's typical line lengths, instead of the last
    word occasionally wrapping onto its own line inside the span. */
-const HEADLINE_CLASS = "text-[clamp(2.75rem,6.2vw,8.25rem)] leading-none tracking-[-0.045em]";
+/* One step under the interior hero scale (104px against its 112px at 1920),
+   so the closing block still commands its section without reading as a
+   second, home-page-sized hero. */
+const HEADLINE_CLASS = "text-[clamp(2.75rem,5.6vw,6.5rem)] leading-none tracking-[-0.045em]";
 
 /** Inverted closing block used at the foot of every page above the footer. */
 export default function CTABanner({
