@@ -36,8 +36,24 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    slug: "oracle-chemicals",
+    slug: "the-clicq",
     index: "01",
+    title: "THE CLICQ",
+    client: "Marketing & Communications",
+    year: "2026",
+    category: "Marketing & Communications",
+    summary:
+      "A studio site for a studio — the hardest brief there is. Case work in front, capability behind it, and a system their own team extends without calling us.",
+    role: ["Design system", "Web systems", "Front-end"],
+    stack: ["Next.js", "TypeScript", "GSAP", "Lenis"],
+    image: "/work/the-clicq.jpg",
+    href: "https://clicq.netlify.app",
+    featured: true,
+    status: "live",
+  },
+  {
+    slug: "oracle-chemicals",
+    index: "02",
     title: "Oracle Chemicals",
     client: "Chemical Distributor",
     year: "2026",
@@ -53,7 +69,7 @@ export const projects: Project[] = [
   },
   {
     slug: "elfi-dental-care",
-    index: "02",
+    index: "03",
     title: "Elfi Dental Care",
     client: "Dental Clinic",
     year: "2026",
@@ -66,22 +82,6 @@ export const projects: Project[] = [
     href: "https://elfidentalcare.netlify.app",
     featured: true,
     status: "template",
-  },
-  {
-    slug: "the-clicq",
-    index: "03",
-    title: "THE CLICQ",
-    client: "Marketing & Communications",
-    year: "2026",
-    category: "Marketing & Communications",
-    summary:
-      "A studio site for a studio — the hardest brief there is. Case work in front, capability behind it, and a system their own team extends without calling us.",
-    role: ["Design system", "Web systems", "Front-end"],
-    stack: ["Next.js", "TypeScript", "GSAP", "Lenis"],
-    image: "/work/the-clicq.jpg",
-    href: "https://clicq.netlify.app",
-    featured: true,
-    status: "live",
   },
 ];
 

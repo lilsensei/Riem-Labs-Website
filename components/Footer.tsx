@@ -30,7 +30,7 @@ const FOOTER_SOCIALS = (["linkedin", "instagram", "whatsapp"] as const).map((ico
 function Column({
   title,
   children,
-  navClassName = "w-40 shrink-0 sm:w-48",
+  navClassName = "w-40 shrink-0 sm:w-48 lg:w-56",
 }: {
   title: string;
   children: React.ReactNode;
@@ -156,7 +156,7 @@ export default function Footer() {
                 space the row already has once Legal wraps onto its own
                 line at this width — no absolute positioning, no guessing
                 Refund Policy's exact vertical offset to match against. */}
-            <Column title="Legal" navClassName="w-auto shrink-0 lg:w-48">
+            <Column title="Legal" navClassName="w-full shrink-0 lg:w-56">
               {legalLinks.map((link, i) => {
                 const isLast = i === legalLinks.length - 1;
                 const anchor = (
@@ -174,7 +174,7 @@ export default function Footer() {
                 // spot on the page for it. Reuses scrollTo(0) rather than a
                 // new control.
                 return (
-                  <li key={link.href} className="flex items-center gap-6">
+                  <li key={link.href} className="flex items-center justify-between gap-6">
                     {anchor}
                     <span className="lg:hidden">
                       <BracketLink onClick={() => scrollTo(0)} size="sm">
@@ -208,9 +208,14 @@ export default function Footer() {
             Based in {site.city}, {site.country}
           </p>
 
-          <BracketLink onClick={() => scrollTo(0)} size="sm">
-            Back to top
-          </BracketLink>
+          {/* Desktop only. Below `lg` the same control already sits beside
+              Refund Policy, where the nav columns actually end — two of them
+              on one phone screen read as a duplicate, which it was. */}
+          <span className="hidden lg:inline-flex">
+            <BracketLink onClick={() => scrollTo(0)} size="sm">
+              Back to top
+            </BracketLink>
+          </span>
         </div>
       </div>
     </footer>

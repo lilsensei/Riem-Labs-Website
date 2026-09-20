@@ -136,16 +136,16 @@ export default function AboutSection({
               {FACTS.map((fact, i) => (
                 <div
                   key={fact.label}
-                  className={`flex items-center justify-between gap-6 py-5 sm:block sm:py-8 ${
-                    i > 0 ? `border-t sm:border-l sm:border-t-0 sm:pl-6 ${ruleTone}` : "sm:pr-6"
-                  }`}
+                  className={`flex items-center justify-between gap-6 py-5 sm:block sm:py-8 sm:text-center ${
+                    i > 0 ? `border-t sm:border-l sm:border-t-0 ${ruleTone}` : ""
+                  } sm:px-6`}
                 >
                   <p
                     className={`whitespace-nowrap text-[1.75rem] font-medium leading-none tracking-[-0.03em] sm:text-[clamp(1.75rem,calc(5.2cqi_-_4px),3.2rem)] ${statTone}`}
                   >
                     {fact.value}
                   </p>
-                  <p className={`micro max-w-[9rem] text-right sm:mt-4 sm:max-w-none sm:text-left ${statLabel}`}>
+                  <p className={`micro max-w-[9rem] text-right sm:mt-4 sm:max-w-none sm:text-center ${statLabel}`}>
                     {fact.label}
                   </p>
                 </div>

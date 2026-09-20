@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import PageScrollbar from "@/components/PageScrollbar";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main id="main">{children}</main>
           <Footer />
+          <PageScrollbar />
         </SmoothScrollProvider>
       </body>
     </html>

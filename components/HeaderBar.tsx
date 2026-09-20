@@ -107,7 +107,7 @@ export default function HeaderBar({
   //   the gutter itself uses.
   return (
     <div
-      className={`relative flex h-[var(--header-h)] items-center justify-between gap-6 px-gutter after:absolute after:bottom-0 after:left-gutter after:right-gutter after:h-px after:content-[''] ${
+      className={`relative mx-auto flex h-[var(--header-h)] w-full max-w-grid items-center justify-between gap-6 px-gutter after:absolute after:bottom-0 after:left-gutter after:right-gutter after:h-px after:content-[''] ${
         isReveal ? "bg-accent after:bg-mist/25" : "bg-mist after:bg-hairline"
       }`}
     >

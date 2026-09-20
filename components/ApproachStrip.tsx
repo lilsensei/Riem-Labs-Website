@@ -18,12 +18,16 @@ export default function ApproachStrip() {
             <Fade
               as="li"
               key={step.index}
-              className={`py-12 lg:py-16 ${
+              // The `i % 2` paddings below are what make the phone 2x2 work and
+              // are deliberately untouched. From `lg` the cell becomes one of
+              // four equal columns, so its padding is evened out and the
+              // contents centre inside it.
+              className={`py-12 lg:px-6 lg:py-16 lg:text-center ${
                 // Right rule between columns; bottom rule where the grid wraps.
                 i < STEPS.length - 1 ? "lg:border-r lg:border-canvas/15" : ""
               } ${i % 2 === 0 ? "border-r border-canvas/15 lg:border-r" : ""} ${
                 i < 2 ? "border-b border-canvas/15 lg:border-b-0" : ""
-              } ${i % 2 === 1 ? "pl-6 lg:pl-10" : "pr-6"} ${i % 2 === 0 ? "lg:pl-10 lg:first:pl-0" : ""}`}
+              } ${i % 2 === 1 ? "pl-6" : "pr-6"}`}
             >
               <p
                 aria-hidden="true"

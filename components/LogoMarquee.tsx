@@ -177,7 +177,9 @@ export default function LogoMarquee() {
     // widening it never changed what anything looked like — but the box
     // itself needs to land on the same grid axis as everything above and
     // below it, not just its content.
-    <section aria-label="Tech stack" className="shell hairline-t hairline-b bg-canvas">
+    // No hairline rules: the strip reads as part of the page rather than a
+    // banded-off full-bleed row. `.shell` keeps it on the shared content axes.
+    <section aria-label="Tech stack" className="shell bg-canvas">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-6 py-10">
         {/* Anchored to the left axis, static, outside the moving rail. Full
             width below `sm` so it stacks above the rail instead of the two

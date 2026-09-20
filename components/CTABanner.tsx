@@ -53,7 +53,9 @@ export default function CTABanner({
               {note}
             </Fade>
 
-            <Fade className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            {/* Right-aligned so the button’s own right edge lands on the
+                shared right content axis, not just its column. */}
+            <Fade className="flex flex-wrap items-center justify-end gap-x-8 gap-y-4">
               <BracketLink href="/contact" variant="boxed" size="lg" tone="dark">
                 {cta}
               </BracketLink>

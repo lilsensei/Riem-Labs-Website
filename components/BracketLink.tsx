@@ -139,8 +139,11 @@ export default function BracketLink({
     // is codedgar's separate corner-bracket layer on top — its default
     // 14px/2px sizing is the smaller of its two variants, the one it uses
     // for outlined buttons, so nothing extra needs setting here.
+    // No `cta-wash`: the boxed button keeps its brackets, border and label
+    // motion on hover, but the interior stays the surface it sits on. The
+    // accent slide belongs to `solid`, which is a filled button by design.
     boxed &&
-      `cta-wash cta-corners border ${framePadding[size]} ${
+      `cta-corners border ${framePadding[size]} ${
         reveal
           ? "border-mist text-mist"
           : dark

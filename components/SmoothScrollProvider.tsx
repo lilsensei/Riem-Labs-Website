@@ -17,6 +17,9 @@ type ScrollTo = (target: string | number | HTMLElement, offset?: number) => void
 
 type SmoothScrollContextValue = {
   scrollTo: ScrollTo;
+  /** Jump with no easing — the scrollbar thumb must track the pointer 1:1
+   *  while dragging, not ease toward it a beat later. */
+  scrollToImmediate: (y: number) => void;
   stop: () => void;
   start: () => void;
 };
@@ -29,6 +32,7 @@ export function useSmoothScroll(): SmoothScrollContextValue {
   return (
     ctx ?? {
       scrollTo: () => {},
+      scrollToImmediate: () => {},
       stop: () => {},
       start: () => {},
     }
@@ -151,11 +155,17 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     }
   }, []);
 
+  const scrollToImmediate = useCallback((y: number) => {
+    const lenis = lenisRef.current;
+    if (lenis) lenis.scrollTo(y, { immediate: true });
+    else window.scrollTo(0, y);
+  }, []);
+
   const stop = useCallback(() => lenisRef.current?.stop(), []);
   const start = useCallback(() => lenisRef.current?.start(), []);
 
   return (
-    <SmoothScrollContext.Provider value={{ scrollTo, stop, start }}>
+    <SmoothScrollContext.Provider value={{ scrollTo, scrollToImmediate, stop, start }}>
       {children}
     </SmoothScrollContext.Provider>
   );

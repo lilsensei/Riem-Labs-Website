@@ -26,7 +26,11 @@ export default function HeroContent({ variant }: { variant: "base" | "reveal" })
   const metaTone = isReveal ? "text-mist/70" : "text-stone";
 
   return (
-    <div className="flex h-full min-h-[100svh] flex-col px-gutter pb-8 pt-[var(--header-h)]">
+    // Same container maths as `.shell` — mx-auto + max-w-grid + px-gutter —
+    // so the headline sits on the identical left axis as every body section.
+    // With px-gutter alone the hero was full-bleed, which only matched the
+    // body below the width where `.shell` stops being max-width-bound.
+    <div className="mx-auto flex h-full min-h-[100svh] w-full max-w-grid flex-col px-gutter pb-8 pt-[var(--header-h)]">
       {/* Centred in the space above the footer row, then biased down 8vh so it
           reads as lower-middle. translate-y is a pure paint offset, so it
           can't shift the footer row or the centring maths.

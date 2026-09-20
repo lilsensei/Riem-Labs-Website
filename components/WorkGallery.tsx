@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectPreview from "@/components/ProjectPreview";
@@ -19,6 +19,23 @@ import { projects, type Project } from "@/lib/projects";
 export default function WorkGallery() {
   const [preview, setPreview] = useState<Project | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+
+  // Deep link: /work#<slug> opens that project's preview on arrival, which is
+  // how the home page's work rows hand off to this page. Same shape as the
+  // services accordion's own hash handling.
+  //
+  // Nothing in the grid carries an id matching a slug, deliberately: the
+  // browser (and SmoothScrollProvider's own hash routing) would otherwise
+  // scroll to that element before the preview opened. An unknown slug simply
+  // matches nothing and the page renders normally.
+  useEffect(() => {
+    const slug = decodeURIComponent(window.location.hash.slice(1));
+    if (!slug) return;
+    const target = projects.find((p) => p.slug === slug);
+    if (target) setPreview(target);
+    // Mount only — this is for arriving on the page, not for later hash edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Stagger the grid in once on mount. This used to re-run whenever the
   // filter changed; with no filter left there is only the first pass.

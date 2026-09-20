@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import Glyph, { type GlyphColor, type GlyphHandle } from "@/components/Glyph";
 import type { Choreography } from "@/lib/glyphChoreographies";
@@ -37,10 +38,12 @@ export default function ProjectCard({
   if (layout === "row") {
     return (
       <article {...revealAttr} className="group relative hairline-b">
-        <a
-          href={project.href}
-          target="_blank"
-          rel="noreferrer noopener"
+        {/* Internal, not the client's site. The home page's job is to get you
+            into the work index with this project already open; the live site
+            is one click further on, from inside the preview itself. The hash
+            is the same deep-link shape `/services#<slug>` already uses. */}
+        <Link
+          href={`/work#${project.slug}`}
           onMouseEnter={() => {
             setHovered(true);
             glyphRef.current?.play();
@@ -83,7 +86,7 @@ export default function ProjectCard({
               ↗
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* Hover plate — clipped open from the centre. */}
         <div

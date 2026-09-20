@@ -196,6 +196,76 @@
     @apply font-mono text-micro uppercase tracking-[0.18em];
   }
 
+  /* ---- Riem's own scrollbar --------------------------------------------
+     The native one is hidden only when PageScrollbar has confirmed both a
+     fine pointer and that JS is running (it sets `data-custom-scrollbar`
+     itself). No flag, no hiding — a failed script still leaves a usable
+     native scrollbar. Mobile and coarse pointers never get here. */
+  @media (hover: hover) and (pointer: fine) {
+    html[data-custom-scrollbar="true"] {
+      scrollbar-width: none;
+    }
+    html[data-custom-scrollbar="true"]::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+  }
+
+  .site-scrollbar {
+    position: fixed;
+    top: 8px;
+    right: 0;
+    bottom: 8px;
+    /* The hit area is far wider than the mark, so the thumb is easy to grab
+       without drawing a 16px band on the page. */
+    width: 16px;
+    z-index: 60;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease-expo);
+  }
+  html[data-custom-scrollbar="true"][data-scrollbar-active="true"] .site-scrollbar {
+    display: block;
+    pointer-events: auto;
+  }
+  html[data-scrollbar-visible="true"] .site-scrollbar {
+    opacity: 1;
+  }
+  /* The drawer owns the screen while open, the same way it suppresses the
+     hero band. */
+  html[data-menu-open="true"] .site-scrollbar {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-scrollbar__thumb {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 3px;
+    border-radius: 3px;
+    background: rgb(13 13 13 / 0.28);
+    cursor: grab;
+    will-change: transform;
+    transition:
+      width 0.22s var(--ease-expo),
+      background-color 0.22s var(--ease-expo);
+  }
+  .site-scrollbar:hover .site-scrollbar__thumb,
+  html[data-scrollbar-dragging="true"] .site-scrollbar__thumb {
+    width: 5px;
+    background: rgb(13 13 13 / 0.45);
+  }
+  html[data-scrollbar-dragging="true"] {
+    cursor: grabbing;
+    user-select: none;
+  }
+  html[data-scrollbar-dragging="true"] .site-scrollbar__thumb {
+    cursor: grabbing;
+  }
+
   /* ---- Legal disclosure panels ----------------------------------------
      Collapsed only once JS is present to open them again, matching the
      `js` flag the layout sets before first paint. Without it the panels
@@ -777,6 +847,9 @@
     display: block;
     width: 0.375rem;
     height: 0.375rem;
+    /* currentcolor is the fallback the reveal mirror keeps: inside the blue
+       band its marks must stay mist, not accent-on-accent. Only the real
+       header copy, which carries data-header-mark, turns accent. */
     background: currentcolor;
     top: var(--mark-grid-top);
     left: var(--mark-grid-left);
@@ -789,6 +862,13 @@
       height 0.28s var(--ease-magnet),
       opacity 0.22s var(--ease-magnet),
       transform 0.3s var(--ease-magnet);
+  }
+  .menu-marker span[data-header-mark] {
+    background: var(--accent);
+  }
+  /* The wipe sweeping behind the bar still wins over the accent above. */
+  html[data-wipe-cover="true"] .menu-marker span[data-header-mark] {
+    background-color: #f6f6f4;
   }
   .menu-marker span:nth-child(1) {
     --mark-grid-top: 0.1875rem;
