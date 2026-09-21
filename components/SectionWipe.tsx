@@ -146,6 +146,25 @@ export default function SectionWipe({
             `${(((left + width / 2) / viewport) * 100).toFixed(3)}%`,
           );
           root.style.setProperty("--reveal-width", `${width.toFixed(2)}px`);
+
+          /**
+           * Whoever drives the band's width owns whether it is painted.
+           *
+           * `--reveal-idle` hides `.reveal-clip` outright — it exists so a
+           * collapsed band leaves no hairline in the hero. HeroSpotlight keeps
+           * it in step from its own write(), but across this seam HeroSpotlight
+           * is paused and cannot: handing the band back at the bottom of the
+           * range sets the flag, and re-entering from below pauses the loop
+           * before anything clears it again. The width then climbed while the
+           * flag still said "idle", so on the way up the hero's half of the
+           * field stayed invisible and the blue existed only inside About —
+           * a detached rectangle with a hard top edge, exactly the shape the
+           * downward pass never produces because the band was live when it
+           * took over. Same rule as write(), applied by whichever component is
+           * currently in charge.
+           */
+          if (width < 0.5) root.dataset.revealIdle = "true";
+          else delete root.dataset.revealIdle;
         };
 
         const collapse = () => {
