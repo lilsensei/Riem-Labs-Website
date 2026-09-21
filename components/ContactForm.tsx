@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BracketLink from "@/components/BracketLink";
 import { site } from "@/lib/site";
+
+/**
+ * Hash that means "you arrived here to brief something" — currently sent by
+ * the work preview's "Brief a similar project". Landing on it puts the cursor
+ * in the first field instead of at the top of a long form. A plain `/contact`
+ * is unaffected.
+ */
+const BRIEF_HASH = "#brief";
 
 const SCOPES = [
   "Websites & Digital Products",
@@ -43,6 +51,31 @@ export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [invalid, setInvalid] = useState<string[]>([]);
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * Arriving from a "Brief a similar project" link: bring the first fieldset
+   * to rest under the header and put the cursor in Name, so the visitor can
+   * start typing without hunting for the field.
+   *
+   * Deliberately mount-only, like the services deep link. The scroll waits a
+   * frame so the section has laid out — measuring before that lands short —
+   * and `scroll-mt` on the fieldset, not a magic number here, is what keeps it
+   * clear of the fixed header. If the element is not there yet for any reason
+   * the whole thing is a no-op and the page behaves as a normal /contact load.
+   */
+  useEffect(() => {
+    if (window.location.hash !== BRIEF_HASH) return;
+
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("brief")?.scrollIntoView({ block: "start" });
+      // preventScroll: the scrollIntoView above already chose the position,
+      // and letting focus() pick its own would fight it.
+      nameRef.current?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleScope = (item: string) =>
     setScope((current) =>
@@ -123,13 +156,17 @@ export default function ContactForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-20">
       {/* 01 — Who */}
-      <fieldset className="border-t border-hairline pt-8">
+      <fieldset
+        id="brief"
+        className="scroll-mt-[calc(var(--header-h)+2rem)] border-t border-hairline pt-8"
+      >
         <Legend index="01">About you</Legend>
 
         <div className="grid gap-x-gutter gap-y-10 md:grid-cols-2">
           <label className="block">
             <span className="meta text-ink/40">Name *</span>
             <input
+              ref={nameRef}
               name="name"
               type="text"
               required

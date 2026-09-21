@@ -131,7 +131,7 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} preview`}
-      className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center"
+      className="fixed inset-0 z-[60] flex items-stretch justify-center sm:items-center"
     >
       {/* Near-opaque, not a readable blur: the page behind should drop away
           entirely so the panel has the screen to itself. The slight blur is
@@ -145,10 +145,20 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
 
       {/* The frame is a column: the header keeps its place and the body below
           it is what scrolls, so Close is reachable from anywhere in the
-          content and the panel never grows past the viewport. */}
+          content and the panel never grows past the viewport.
+
+          On a phone it takes the whole screen. `max-h-[90svh]` against an
+          `items-end` dialog left the panel 10% of the viewport short and
+          pinned to the bottom — 78px of dead canvas above it at 360, 93px at
+          430 — while the content it could not fit ran on below the fold.
+          Stretching to the dialog's own box (which is `fixed inset-0`, so it
+          is the viewport, with none of the svh/dvh URL-bar guesswork) gives
+          the header a fixed top, the body the exact remaining height, and the
+          scroll one unambiguous owner. From `sm` the centred sheet returns
+          untouched. */}
       <div
         ref={panelRef}
-        className="relative flex max-h-[90svh] w-full max-w-6xl flex-col border border-hairline bg-canvas"
+        className="relative flex h-full max-h-none w-full max-w-6xl flex-col border-0 border-hairline bg-canvas sm:h-auto sm:max-h-[90svh] sm:border"
       >
         <div className="flex shrink-0 items-center justify-between gap-6 border-b border-hairline px-6 py-4 lg:px-10">
           <p className="meta flex items-baseline gap-2">
@@ -309,7 +319,11 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
                   Visit live site
                 </BracketLink>
               ) : null}
-              <BracketLink href="/contact" size="sm">
+              {/* `#brief` lands on the form's first fieldset with the cursor
+                  already in Name — see ContactForm. Navigating unmounts the
+                  gallery, so this dialog tears down on the way out and clears
+                  its own scroll lock, inert flags and focus trap first. */}
+              <BracketLink href="/contact#brief" size="sm">
                 Brief a similar project
               </BracketLink>
             </div>

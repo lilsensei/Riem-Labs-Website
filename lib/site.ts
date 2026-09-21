@@ -7,7 +7,7 @@ export const site = {
   /** The one published inbox — enquiries, legal pages and billing alike. */
   email: "info@riemlabs.dev",
   /** The one published number: calls, and the same line WhatsApp opens. */
-  phone: "+254 794 989 397",
+  phone: "+254 182 460 565",
   city: "Nairobi",
   country: "Kenya",
   timeZone: "Africa/Nairobi",
@@ -44,7 +44,7 @@ export const legalLinks = [
 
 /** The business line, in wa.me's digits-only form — the same number as
  *  `site.phone`, which is the only number the site now publishes. */
-const WHATSAPP_NUMBER = "254794989397";
+const WHATSAPP_NUMBER = "254182460565";
 
 export const WHATSAPP_ENQUIRY = "Hello Riem Labs, I’d like to discuss a project.";
 

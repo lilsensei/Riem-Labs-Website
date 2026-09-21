@@ -172,7 +172,25 @@ export default function SectionWipe({
         // currently-rendered position — never a cached custom-property string.
         let startLeft = 0;
         let startWidth = 0;
-        let captured = false;
+        /**
+         * Whether startLeft/startWidth hold a real handoff rect to animate from.
+         *
+         * This is the whole of the direction bug. It used to be cleared inside
+         * resumeBand(), which onLeave calls the moment the field reaches full
+         * width. So by the time the visitor scrolled back up, the flag said
+         * "nothing captured" and re-entry re-measured the band — while it was
+         * full-bleed. Progress 0 then meant "already the whole viewport", the
+         * interpolation had nowhere to travel, and the contraction never
+         * played in either direction; worse, the stale full-width rect stayed
+         * as the start for the *next* downward pass, which is why the sweep
+         * looked right once after a reload and flat every time after that.
+         *
+         * The rect is now kept across the bottom of the range, exactly so the
+         * scroll-up can reverse the scroll-down, and is dropped only when the
+         * visitor leaves back above the hero — where the next downward pass
+         * should genuinely re-measure from wherever the pointer band then is.
+         */
+        let hasStart = false;
 
         const pauseBand = () => window.dispatchEvent(new CustomEvent("site:reveal-pause"));
 
@@ -190,23 +208,34 @@ export default function SectionWipe({
             startLeft = rect ? rect.left : viewport / 2;
           }
 
-          captured = true;
+          hasStart = true;
           pauseBand();
         };
 
         /**
          * Re-entering from below (scrolling up) must NOT re-measure the band —
-         * it is full-bleed at that moment, so capturing it would make progress 0
-         * mean "whole hero blue" and the contraction would never play. Reuse the
-         * rect captured on the way down so the scroll-up exactly reverses it.
+         * it is full-bleed at that moment. Reuse the rect captured on the way
+         * down so the scroll-up exactly reverses it.
          */
-        const resumeCapture = () => {
-          if (captured) pauseBand();
-          else captureBand();
+        const reenterFromBelow = () => {
+          if (!hasStart) {
+            // Arrived under the seam without ever crossing it — a deep link, or
+            // a browser restoring scroll position on reload. There is no
+            // handoff to reverse, so contract to a centre seam: the same shape
+            // the downward pass takes when the band is idle, which is every
+            // time on a touch device.
+            startWidth = 0;
+            startLeft = layoutWidth() / 2;
+            hasStart = true;
+          }
+          pauseBand();
         };
 
+        /**
+         * Hand the band back to HeroSpotlight. Deliberately does not touch
+         * `hasStart` — see above; the rect has to outlive this.
+         */
         const resumeBand = (leftPx: number, widthPx: number) => {
-          captured = false;
           // layoutWidth(), not window.innerWidth — the latter includes the
           // scrollbar, and handing the band back on that basis offset it from
           // the veil by the scrollbar's width for the frames after the handoff.
@@ -228,9 +257,9 @@ export default function SectionWipe({
           scrub: true,
           invalidateOnRefresh: true,
           onEnter: captureBand,
-          onEnterBack: resumeCapture,
+          onEnterBack: reenterFromBelow,
           onUpdate: (self) => {
-            if (!captured) captureBand();
+            if (!hasStart) captureBand();
 
             const p = gsap.utils.clamp(0, 1, self.progress);
             const viewport = layoutWidth();
@@ -252,8 +281,9 @@ export default function SectionWipe({
           onLeaveBack: () => {
             // Back above the hero — hand the band to the cursor again, and let
             // the next downward pass re-measure from wherever it then sits.
+            // This is the one place the handoff rect is genuinely spent.
             collapse();
-            captured = false;
+            hasStart = false;
             resumeBand(startLeft, startWidth);
           },
         });
