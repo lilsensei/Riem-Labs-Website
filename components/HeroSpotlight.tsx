@@ -111,6 +111,34 @@ export default function HeroSpotlight() {
       else delete root.dataset.revealReady;
     };
 
+    /**
+     * Publish where the pointer band *wants* to be, on its own channel.
+     *
+     * `--reveal-position` / `--reveal-width` are the band as currently drawn,
+     * and during the section wipe the wipe itself owns them. These two say
+     * something different and always true: the geometry this component would
+     * give the band right now, from the live cursor. SectionWipe reads them so
+     * its contraction can resolve into the real band instead of into the rect
+     * that was captured on the way down — which is a different place entirely
+     * once the cursor has moved, and was the jump at the seam.
+     *
+     * Centre is refreshed per pointermove and costs no layout read (the clamp
+     * runs off the cached width). Width only changes when the band opens or
+     * collapses, so it is published from those transitions instead.
+     */
+    const publishCentre = () => {
+      if (!running) return;
+      const viewport = layoutWidth();
+      const x = lastPointerX >= 0 ? lastPointerX : viewport / 2;
+      const pct = clampPosition((x / viewport) * 100);
+      root.style.setProperty("--hero-band-centre", `${((pct / 100) * viewport).toFixed(2)}px`);
+    };
+
+    const publishWidth = (width: number) => {
+      if (!running) return;
+      root.style.setProperty("--hero-band-width", `${width.toFixed(2)}px`);
+    };
+
     const write = () => {
       root.style.setProperty("--reveal-position", `${currentPosition.toFixed(3)}%`);
       root.style.setProperty("--reveal-width", `${currentWidth.toFixed(3)}px`);
@@ -180,12 +208,14 @@ export default function HeroSpotlight() {
       collapseFrom = currentWidth;
       collapseStart = performance.now();
       targetWidth = 0;
+      publishWidth(0);
       run();
     };
 
     const markActive = () => {
       root.dataset.revealActive = "true";
       targetWidth = ACTIVE_PX;
+      publishWidth(ACTIVE_PX);
       window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(goIdle, IDLE_DELAY);
       run();
@@ -278,6 +308,10 @@ export default function HeroSpotlight() {
     const onPointerMove = (event: PointerEvent) => {
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
+      // Before the pause check on purpose: while the wipe is driving the band
+      // this channel is the only thing still tracking the cursor, and it is
+      // what the wipe contracts back into.
+      publishCentre();
       if (paused) return;
       if (anchorEl) {
         const rect = anchorEl.getBoundingClientRect();
@@ -332,6 +366,7 @@ export default function HeroSpotlight() {
       measureWidth();
       syncReady();
       targetPosition = clampPosition(targetPosition);
+      publishCentre();
       run();
     };
 
@@ -342,6 +377,8 @@ export default function HeroSpotlight() {
       root.dataset.revealIdle = "true";
       measureWidth();
       syncReady();
+      publishCentre();
+      publishWidth(0);
       window.addEventListener("pointermove", onPointerMove, { passive: true });
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onResize);
@@ -361,6 +398,10 @@ export default function HeroSpotlight() {
       currentWidth = 0;
       root.style.setProperty("--reveal-width", "0px");
       root.dataset.revealIdle = "true";
+      // Touch and reduced-motion visitors never get a band; leaving the channel
+      // behind would have SectionWipe contract toward a band that cannot exist.
+      root.style.removeProperty("--hero-band-centre");
+      root.style.removeProperty("--hero-band-width");
       window.clearTimeout(idleTimer);
       window.clearTimeout(scrollEndTimer);
       window.cancelAnimationFrame(frame);

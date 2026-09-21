@@ -217,6 +217,21 @@ export default function SectionWipe({
          * it is full-bleed at that moment. Reuse the rect captured on the way
          * down so the scroll-up exactly reverses it.
          */
+        /**
+         * The band's live geometry, straight from HeroSpotlight's own channel.
+         *
+         * Returns null where there is no pointer band at all — touch, reduced
+         * motion, anything under 64rem — in which case the captured rect stays
+         * the destination and the centre-seam behaviour is unchanged.
+         */
+        const liveBand = () => {
+          const style = getComputedStyle(root);
+          const centre = Number.parseFloat(style.getPropertyValue("--hero-band-centre"));
+          const width = Number.parseFloat(style.getPropertyValue("--hero-band-width"));
+          if (!Number.isFinite(centre) || !Number.isFinite(width)) return null;
+          return { left: centre - width / 2, width: width };
+        };
+
         const reenterFromBelow = () => {
           if (!hasStart) {
             // Arrived under the seam without ever crossing it — a deep link, or
@@ -264,8 +279,26 @@ export default function SectionWipe({
             const p = gsap.utils.clamp(0, 1, self.progress);
             const viewport = layoutWidth();
 
-            const left = gsap.utils.interpolate(startLeft, 0, p);
-            const width = gsap.utils.interpolate(startWidth, viewport, p);
+            /**
+             * Progress 0 is the hover band — the one on screen right now, not
+             * the one that handed over on the way down.
+             *
+             * Going down those are the same thing, so nothing changes there.
+             * Going back up they are only the same if the cursor never moved:
+             * move it while About is on screen and the field used to contract
+             * into the old captured rect and then let HeroSpotlight snap the
+             * band across to the cursor — measured at 695px and 835px of jump.
+             * Reading the live channel makes the end of the contraction and the
+             * start of the band the same geometry, so there is nothing left to
+             * reconnect. Falls back to the captured rect wherever no band
+             * exists (touch, reduced motion), which is the centre seam.
+             */
+            const band = liveBand();
+            const originLeft = band ? band.left : startLeft;
+            const originWidth = band ? band.width : startWidth;
+
+            const left = gsap.utils.interpolate(originLeft, 0, p);
+            const width = gsap.utils.interpolate(originWidth, viewport, p);
             const right = Math.max(0, viewport - (left + width));
 
             setClip(0, right, 0, Math.max(0, left));

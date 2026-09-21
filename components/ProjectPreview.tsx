@@ -156,8 +156,20 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
           the header a fixed top, the body the exact remaining height, and the
           scroll one unambiguous owner. From `sm` the centred sheet returns
           untouched. */}
+      {/*
+        `data-lenis-prevent` is what actually makes this scroll on a phone.
+        Lenis binds wheel and touchmove globally and preventDefaults them so it
+        can drive the page itself; calling stop() ends its animation but leaves
+        those listeners in place, so a drag inside the dialog was swallowed
+        before the browser ever saw it. The container was scrollable the whole
+        time — 1190px of content in 723px at 360 — but seven full drags moved
+        scrollTop by zero and the CTA stayed unreachable. This attribute tells
+        Lenis to leave gestures inside the panel alone and let the native
+        scroller have them.
+      */}
       <div
         ref={panelRef}
+        data-lenis-prevent
         className="relative flex h-full max-h-none w-full max-w-6xl flex-col border-0 border-hairline bg-canvas sm:h-auto sm:max-h-[90svh] sm:border"
       >
         <div className="flex shrink-0 items-center justify-between gap-6 border-b border-hairline px-6 py-4 lg:px-10">
@@ -201,7 +213,7 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
             project title, the technology chips across the summary. A flex
             column of `shrink-0` blocks cannot compress that way, so the body
             simply scrolls. */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:grid lg:grid-cols-2 lg:overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain lg:grid lg:grid-cols-2 lg:overflow-hidden">
           {/* The media column sizes to the screenshots' own ratio — all three
               are 1600×900, so a true 16:9 box leaves `object-contain` nothing
               to letterbox and nothing to crop. It deliberately does not

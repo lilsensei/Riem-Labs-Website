@@ -188,6 +188,42 @@
     @apply border-b border-hairline;
   }
 
+  /* ---- Autofilled form fields -----------------------------------------
+     Chrome paints its own pale background on an autofilled input and there is
+     no property that turns it off: `background-color` is ignored on that
+     pseudo-class. Two things together do work, and both are needed.
+
+     The inset shadow is the actual cover — 1000px of it, so the field is
+     repainted in the surface colour whatever its height. `--canvas` because
+     the contact form sits on the canvas surface; the fields themselves are
+     `bg-transparent`, so this is the colour they were already showing.
+
+     The long transition is the belt to that braces: Chrome animates the
+     autofill background in, and a delay this large means the animation never
+     reaches a frame anyone sees. On its own it would still flash on some
+     builds, hence both.
+
+     `-webkit-text-fill-color` rather than `color`, which autofill also
+     overrides, and an explicit caret so the field keeps Riem's ink. Autofill
+     itself is untouched — this is purely what it looks like afterwards. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  textarea:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--ink);
+    -webkit-box-shadow: 0 0 0 1000px var(--canvas) inset;
+    box-shadow: 0 0 0 1000px var(--canvas) inset;
+    caret-color: var(--ink);
+    -webkit-transition: background-color 9999s ease-in-out 0s;
+    transition: background-color 9999s ease-in-out 0s;
+    font: inherit;
+    letter-spacing: inherit;
+  }
+
   /* ---- Editorial meta type -------------------------------------------- */
   .meta {
     @apply font-mono text-meta uppercase tracking-[0.14em];

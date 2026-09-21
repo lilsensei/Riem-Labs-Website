@@ -35,12 +35,21 @@ type Status = "idle" | "submitting" | "success" | "error";
 const fieldClass =
   "w-full border-b border-hairline bg-transparent pb-3 pt-2 text-lg outline-none transition-colors duration-400 ease-expo placeholder:text-ink/25 focus:border-accent";
 
-function Legend({ index, children }: { index: string; children: React.ReactNode }) {
+function Legend({
+  index,
+  children,
+  invalid = false,
+}: {
+  index: string;
+  children: React.ReactNode;
+  /** Turns the whole heading — star included — Riem blue after a failed submit. */
+  invalid?: boolean;
+}) {
   return (
     <legend className="meta flex items-baseline gap-2 pb-6">
       <span className="tnum text-accent">{index}</span>
       <span className="text-ink/25">/</span>
-      <span>{children}</span>
+      <span className={invalid ? "text-accent" : undefined}>{children}</span>
     </legend>
   );
 }
@@ -50,8 +59,16 @@ export default function ContactForm() {
   const [timeline, setTimeline] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [invalid, setInvalid] = useState<string[]>([]);
+  /**
+   * One message per invalid field, keyed by field name. Empty object means the
+   * form is clean — this is also what decides whether a submit is attempted at
+   * all, so an empty required field can never reach the network.
+   */
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const scopeRef = useRef<HTMLDivElement>(null);
 
   /**
    * Arriving from a "Brief a similar project" link: bring the first fieldset
@@ -82,11 +99,49 @@ export default function ContactForm() {
       current.includes(item) ? current.filter((s) => s !== item) : [...current, item],
     );
 
+  /** Clear one field's message as soon as the visitor addresses it. */
+  const clearError = (field: string) =>
+    setErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+
+  /**
+   * The required set is exactly the fields carrying a `*` in the UI — name,
+   * email, scope and the brief. Timeline and company are optional and are not
+   * checked here.
+   */
+  function validate(payload: {
+    name: string;
+    email: string;
+    message: string;
+    scope: string[];
+  }) {
+    const found: Record<string, string> = {};
+    if (!payload.name.trim()) found.name = "Please enter your name.";
+    if (!payload.email.trim()) found.email = "Please enter your email.";
+    // Deliberately permissive: this is a "did you mean to type an address"
+    // check, not an RFC 5322 implementation. The server will be the authority.
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email.trim()))
+      found.email = "Please enter a valid email.";
+    if (payload.scope.length === 0) found.scope = "Please select at least one.";
+    if (!payload.message.trim())
+      found.message = "Please tell us what you’re trying to solve.";
+    return found;
+  }
+
+  /** Order matters: the visitor is sent to the first one they will meet. */
+  const FOCUS_ORDER: Array<[string, () => HTMLElement | null]> = [
+    ["name", () => nameRef.current],
+    ["email", () => emailRef.current],
+    ["scope", () => scopeRef.current?.querySelector("button") ?? null],
+    ["message", () => messageRef.current],
+  ];
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("submitting");
-    setError(null);
-    setInvalid([]);
 
     const data = new FormData(event.currentTarget);
     const payload = {
@@ -97,6 +152,31 @@ export default function ContactForm() {
       scope,
       timeline,
     };
+
+    // Client validation first, and it short-circuits. Submitting an empty form
+    // used to POST to an endpoint that does not exist yet and surface the
+    // resulting failure as "Network error", which told the visitor their
+    // connection was broken when the truth was that they had not filled the
+    // form in. Nothing is sent until the required fields are actually there.
+    const found = validate(payload);
+    if (Object.keys(found).length > 0) {
+      setErrors(found);
+      setError(null);
+      setStatus("idle");
+      const first = FOCUS_ORDER.find((entry) => found[entry[0]]);
+      const el = first ? first[1]() : null;
+      if (el) {
+        el.scrollIntoView({ block: "center" });
+        // A frame later: scrollIntoView and focus() race otherwise, and the
+        // field lands under the header.
+        requestAnimationFrame(() => el.focus({ preventScroll: true }));
+      }
+      return;
+    }
+
+    setStatus("submitting");
+    setError(null);
+    setErrors({});
 
     try {
       const response = await fetch("/api/inquiry", {
@@ -112,7 +192,9 @@ export default function ContactForm() {
       };
 
       if (!response.ok || !result.ok) {
-        setInvalid(result.fields ?? []);
+        setErrors(
+          Object.fromEntries((result.fields ?? []).map((f) => [f, "Please check this field."])),
+        );
         setError(result.error ?? "Something went wrong. Please email us directly.");
         setStatus("error");
         return;
@@ -151,7 +233,15 @@ export default function ContactForm() {
     );
   }
 
-  const flagged = (field: string) => invalid.includes(field);
+  const flagged = (field: string) => Boolean(errors[field]);
+
+  /** Inline message under a field, tied to it by aria-describedby. */
+  const FieldError = ({ field }: { field: string }) =>
+    errors[field] ? (
+      <span id={`${field}-error`} className="meta mt-3 block text-accent">
+        {errors[field]}
+      </span>
+    ) : null;
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-20">
@@ -164,7 +254,7 @@ export default function ContactForm() {
 
         <div className="grid gap-x-gutter gap-y-10 md:grid-cols-2">
           <label className="block">
-            <span className="meta text-ink/40">Name *</span>
+            <span className={`meta ${flagged("name") ? "text-accent" : "text-ink/40"}`}>Name *</span>
             <input
               ref={nameRef}
               name="name"
@@ -172,22 +262,29 @@ export default function ContactForm() {
               required
               autoComplete="name"
               placeholder="Your name"
-              aria-invalid={flagged("name")}
+              aria-invalid={flagged("name") || undefined}
+              aria-describedby={flagged("name") ? "name-error" : undefined}
+              onInput={() => clearError("name")}
               className={`${fieldClass} mt-4 ${flagged("name") ? "border-accent" : ""}`}
             />
+            <FieldError field="name" />
           </label>
 
           <label className="block">
-            <span className="meta text-ink/40">Email *</span>
+            <span className={`meta ${flagged("email") ? "text-accent" : "text-ink/40"}`}>Email *</span>
             <input
+              ref={emailRef}
               name="email"
               type="email"
               required
               autoComplete="email"
               placeholder="you@company.com"
-              aria-invalid={flagged("email")}
+              aria-invalid={flagged("email") || undefined}
+              aria-describedby={flagged("email") ? "email-error" : undefined}
+              onInput={() => clearError("email")}
               className={`${fieldClass} mt-4 ${flagged("email") ? "border-accent" : ""}`}
             />
+            <FieldError field="email" />
           </label>
 
           <label className="block md:col-span-2">
@@ -205,16 +302,27 @@ export default function ContactForm() {
 
       {/* 02 — Scope */}
       <fieldset className="border-t border-hairline pt-8">
-        <Legend index="02">Scope * — select all that apply</Legend>
+        <Legend index="02" invalid={flagged("scope")}>
+          Scope * — select all that apply
+        </Legend>
 
-        <div className="flex flex-wrap gap-3">
+        <div
+          ref={scopeRef}
+          role="group"
+          aria-invalid={flagged("scope") || undefined}
+          aria-describedby={flagged("scope") ? "scope-error" : undefined}
+          className="flex flex-wrap gap-3"
+        >
           {SCOPES.map((option) => {
             const active = scope.includes(option);
             return (
               <button
                 key={option}
                 type="button"
-                onClick={() => toggleScope(option)}
+                onClick={() => {
+                  toggleScope(option);
+                  clearError("scope");
+                }}
                 aria-pressed={active}
                 className={`meta group inline-flex items-baseline gap-1.5 border px-4 py-3 transition-colors duration-400 ease-expo ${
                   active
@@ -233,6 +341,7 @@ export default function ContactForm() {
             );
           })}
         </div>
+        <FieldError field="scope" />
       </fieldset>
 
       {/* 03 — Timeline */}
@@ -263,21 +372,24 @@ export default function ContactForm() {
 
       {/* 04 — Brief */}
       <fieldset className="border-t border-hairline pt-8">
-        <Legend index="04">The brief *</Legend>
+        <Legend index="04" invalid={flagged("message")}>The brief *</Legend>
 
         <label className="block">
-          <span className="meta text-ink/40">
+          <span className={`meta ${flagged("message") ? "text-accent" : "text-ink/40"}`}>
             Tell us what you’re trying to improve, build or solve.
           </span>
           <textarea
+            ref={messageRef}
             name="message"
             required
             rows={6}
-            minLength={20}
             placeholder="Twenty words is plenty to start."
-            aria-invalid={flagged("message")}
+            aria-invalid={flagged("message") || undefined}
+            aria-describedby={flagged("message") ? "message-error" : undefined}
+            onInput={() => clearError("message")}
             className={`${fieldClass} mt-4 resize-y leading-relaxed ${flagged("message") ? "border-accent" : ""}`}
           />
+          <FieldError field="message" />
         </label>
       </fieldset>
 
