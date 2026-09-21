@@ -65,6 +65,12 @@ export default function ContactForm() {
    * all, so an empty required field can never reach the network.
    */
   const [errors, setErrors] = useState<Record<string, string>>({});
+  /**
+   * In-flight lock. `status` cannot do this job: three clicks dispatched in one
+   * task all read the same pre-update state and all get through. A ref is set
+   * synchronously, so the second click sees it immediately.
+   */
+  const sending = useRef(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -143,7 +149,11 @@ export default function ContactForm() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
+    // A second submit while the first is in flight would send the brief twice.
+    if (sending.current) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const payload = {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
@@ -151,6 +161,9 @@ export default function ContactForm() {
       message: String(data.get("message") ?? ""),
       scope,
       timeline,
+      // Honeypot. Always empty for a real visitor; the server treats anything
+      // here as a bot and answers exactly as it answers a success.
+      website: String(data.get("website") ?? ""),
     };
 
     // Client validation first, and it short-circuits. Submitting an empty form
@@ -174,6 +187,7 @@ export default function ContactForm() {
       return;
     }
 
+    sending.current = true;
     setStatus("submitting");
     setError(null);
     setErrors({});
@@ -185,25 +199,40 @@ export default function ContactForm() {
         body: JSON.stringify(payload),
       });
 
-      const result = (await response.json()) as {
-        ok: boolean;
+      // A non-JSON body is itself a failure signal — a proxy error page, say.
+      const result = (await response.json().catch(() => null)) as {
+        success?: boolean;
         error?: string;
-        fields?: string[];
-      };
+        message?: string;
+      } | null;
 
-      if (!response.ok || !result.ok) {
-        setErrors(
-          Object.fromEntries((result.fields ?? []).map((f) => [f, "Please check this field."])),
+      if (!response.ok || !result?.success) {
+        // Rate limiting is the one failure whose own wording is more useful
+        // than the generic line — it explains the wait. Everything else gets
+        // the fallback, whose job is to hand the visitor a way through.
+        setError(
+          result?.error === "rate_limited" && result.message?.trim()
+            ? result.message.trim()
+            : "Network error. Please email us directly.",
         );
-        setError(result.error ?? "Something went wrong. Please email us directly.");
         setStatus("error");
         return;
       }
 
+      // Clear the form as well as switching view: the success panel replaces
+      // the fields, but this component keeps its own scope/timeline state and
+      // would hand it back still filled if the visitor returns to the form.
+      form.reset();
+      setScope([]);
+      setTimeline(null);
+      setErrors({});
+      setError(null);
       setStatus("success");
     } catch {
       setError("Network error. Please email us directly.");
       setStatus("error");
+    } finally {
+      sending.current = false;
     }
   }
 
@@ -245,6 +274,19 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-20">
+      {/*
+        Honeypot. Not `type="hidden"` — plenty of bots skip those — but a real
+        field moved out of reach: off-screen, no tab stop, hidden from assistive
+        tech and with autofill switched off so a password manager never puts
+        anything in it. Anyone who can see this is not using a browser.
+      */}
+      <div aria-hidden="true" className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+        <label>
+          Leave this field empty
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
       {/* 01 — Who */}
       <fieldset
         id="brief"
