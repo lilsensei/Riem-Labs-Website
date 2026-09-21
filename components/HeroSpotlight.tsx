@@ -29,6 +29,12 @@ const SETTLE_PCT = 0.01;
 const SETTLE_PX = 0.05;
 /** LERP is authored against a 60fps frame; this keeps that feel at any rate. */
 const FRAME_MS = 1000 / 60;
+/**
+ * Quiet time after the last scroll event before the band reattaches to the
+ * cursor. Short enough that coming back into the hero feels immediate, long
+ * enough not to fire mid-gesture on a trackpad's stream of small deltas.
+ */
+const SCROLL_SETTLE_MS = 110;
 
 /** Desktop, real cursor only. */
 const ENABLE_QUERY = "(min-width: 64rem) and (hover: hover) and (pointer: fine)";
@@ -56,6 +62,25 @@ export default function HeroSpotlight() {
     let collapseStart = 0;
     let anchorEl: Element | null = null;
     let running = false;
+
+    /**
+     * Last real cursor position, in viewport pixels.
+     *
+     * The band used to know where the pointer was only for as long as
+     * pointermove events kept arriving. Scrolling collapses it by design, so
+     * coming back up into the hero with a still cursor left nothing to re-open
+     * it: the effect waited for a move that never came, and when one finally
+     * did the band slid in from wherever it had been parked rather than
+     * appearing under the cursor. Keeping the coordinate means the pointer
+     * stays the source of truth across the seam in both directions.
+     *
+     * Recorded on every move including while the wipe owns the band, because
+     * it is two number assignments and no layout read — the reason the old
+     * code avoided work here does not apply.
+     */
+    let lastPointerX = -1;
+    let lastPointerY = -1;
+    let scrollEndTimer: number | undefined;
 
     // Measured on resize, never per pointermove. `--reveal-position` is a `%`
     // resolving against the hero's content box, so the pointer has to be
@@ -166,6 +191,49 @@ export default function HeroSpotlight() {
       run();
     };
 
+    /** Is the cursor actually over the hero right now? */
+    const pointerInsideHero = () => {
+      if (lastPointerX < 0 || lastPointerY < 0) return false;
+      const rect = hero.getBoundingClientRect();
+      return (
+        lastPointerY >= rect.top &&
+        lastPointerY <= rect.bottom &&
+        lastPointerX >= rect.left &&
+        lastPointerX <= rect.right
+      );
+    };
+
+    /**
+     * Re-attach the band to the live cursor position.
+     *
+     * Position is *snapped*, not eased: this runs when the band is collapsed
+     * and invisible, so there is nothing on screen to jump, and easing from the
+     * old parked position is exactly the drift that made coming back up into
+     * the hero feel disconnected. Width still opens through the normal tween.
+     */
+    const reconnect = () => {
+      if (paused || !running) return;
+      // A hovered anchor owns the position outright; don't fight it.
+      if (anchorEl) return;
+      if (!pointerInsideHero()) return;
+
+      const pct = clampPosition((lastPointerX / layoutWidth()) * 100);
+      currentPosition = pct;
+      targetPosition = pct;
+      markActive();
+    };
+
+    /**
+     * Scrolling holds the band closed — that part is deliberate and unchanged.
+     * The moment it stops, the band reopens under wherever the cursor actually
+     * is, so re-entering the hero needs no pointer movement to wake it. One
+     * bounding-box read per scroll gesture, not per frame.
+     */
+    const onScrollEnd = () => {
+      syncReady();
+      reconnect();
+    };
+
     // While the section wipe owns the transition, the band freezes rather than
     // fighting it for the same screen space.
     let paused = false;
@@ -179,23 +247,37 @@ export default function HeroSpotlight() {
       paused = false;
       const detail = (event as CustomEvent<{ centrePct?: number }>).detail;
 
-      if (typeof detail?.centrePct === "number" && Number.isFinite(detail.centrePct)) {
-        // Pick up exactly where the scroll motion left the band. Width stays at
-        // zero — the band is collapsed at rest anyway, so the next pointermove
-        // opens it in place with no jump.
-        currentPosition = clampPosition(detail.centrePct);
-        targetPosition = currentPosition;
-      }
-
       currentWidth = 0;
       targetWidth = 0;
       root.style.setProperty("--reveal-width", "0px");
       root.dataset.revealActive = "false";
       root.dataset.revealIdle = "true";
+
+      if (pointerInsideHero()) {
+        // The cursor outranks the handover point. Resuming at the wipe's centre
+        // while the pointer sat somewhere else is what read as the band
+        // "resetting to a midpoint" on the way back up.
+        const pct = clampPosition((lastPointerX / layoutWidth()) * 100);
+        currentPosition = pct;
+        targetPosition = pct;
+      } else if (typeof detail?.centrePct === "number" && Number.isFinite(detail.centrePct)) {
+        // No cursor over the hero — pick up exactly where the scroll motion
+        // left the band. Width stays at zero, so the next pointermove opens it
+        // in place with no jump.
+        currentPosition = clampPosition(detail.centrePct);
+        targetPosition = currentPosition;
+      }
+
       run();
+      // If the gesture has already finished, reopen straight away rather than
+      // waiting for a move that a still cursor will never send.
+      window.clearTimeout(scrollEndTimer);
+      scrollEndTimer = window.setTimeout(onScrollEnd, SCROLL_SETTLE_MS);
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
       if (paused) return;
       if (anchorEl) {
         const rect = anchorEl.getBoundingClientRect();
@@ -239,6 +321,9 @@ export default function HeroSpotlight() {
       window.clearTimeout(idleTimer);
       anchorEl = null;
       if (root.dataset.revealActive === "true") goIdle();
+      // Re-arm on the trailing edge of the gesture, whichever direction it ran.
+      window.clearTimeout(scrollEndTimer);
+      scrollEndTimer = window.setTimeout(onScrollEnd, SCROLL_SETTLE_MS);
     };
 
     // A resize changes the percentage a pointer position maps to, so the cached
@@ -277,6 +362,7 @@ export default function HeroSpotlight() {
       root.style.setProperty("--reveal-width", "0px");
       root.dataset.revealIdle = "true";
       window.clearTimeout(idleTimer);
+      window.clearTimeout(scrollEndTimer);
       window.cancelAnimationFrame(frame);
       frame = 0;
       window.removeEventListener("pointermove", onPointerMove);

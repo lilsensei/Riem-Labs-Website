@@ -691,27 +691,41 @@
     will-change: transform;
   }
 
-  /* ---- Drawer nav hover cues ------------------------------------------- */
+  /* ---- Drawer nav cues -------------------------------------------------
+     Every row carries its bracketed tag by default. This is the touch state,
+     and it is the honest one: the cue was written as a hover affordance, so on
+     a device with no hover exactly one of the five rows — whichever route you
+     were already on — ever showed a tag, and the other four looked like they
+     had simply been forgotten. A label nobody can summon is not a label. */
   .menu-link {
-    --cue-opacity: 0;
-    --cue-clip: inset(0 100% 0 0);
-  }
-  /* Current page keeps its cue visible at rest… */
-  .menu-link[data-current="true"] {
     --cue-opacity: 1;
     --cue-clip: inset(0 0 0 0);
   }
-  /* …but any hover/focus in the list takes over completely. The :has()
-     selectors outrank the [data-current] rule, so exactly one cue shows. */
-  .menu-nav:has(.menu-link:hover) .menu-link,
-  .menu-nav:has(.menu-link:focus-visible) .menu-link {
-    --cue-opacity: 0;
-    --cue-clip: inset(0 100% 0 0);
-  }
-  .menu-nav:has(.menu-link:hover) .menu-link:hover,
-  .menu-nav:has(.menu-link:focus-visible) .menu-link:focus-visible {
-    --cue-opacity: 1;
-    --cue-clip: inset(0 0 0 0);
+
+  /* With a real cursor the approved behaviour stands: the cues stay hidden and
+     follow the pointer, one at a time. */
+  @media (hover: hover) and (pointer: fine) {
+    .menu-link {
+      --cue-opacity: 0;
+      --cue-clip: inset(0 100% 0 0);
+    }
+    /* Current page keeps its cue visible at rest… */
+    .menu-link[data-current="true"] {
+      --cue-opacity: 1;
+      --cue-clip: inset(0 0 0 0);
+    }
+    /* …but any hover/focus in the list takes over completely. The :has()
+       selectors outrank the [data-current] rule, so exactly one cue shows. */
+    .menu-nav:has(.menu-link:hover) .menu-link,
+    .menu-nav:has(.menu-link:focus-visible) .menu-link {
+      --cue-opacity: 0;
+      --cue-clip: inset(0 100% 0 0);
+    }
+    .menu-nav:has(.menu-link:hover) .menu-link:hover,
+    .menu-nav:has(.menu-link:focus-visible) .menu-link:focus-visible {
+      --cue-opacity: 1;
+      --cue-clip: inset(0 0 0 0);
+    }
   }
   .menu-cue {
     opacity: var(--cue-opacity);

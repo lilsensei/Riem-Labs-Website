@@ -457,6 +457,15 @@ export default function Header() {
           ref={panelRef}
           aria-label="Primary"
           aria-hidden={!open}
+          /* `inert` alongside aria-hidden, the same pairing the preview dialog
+             and both accordions use. aria-hidden on its own hides the panel
+             from assistive tech but still allows focus inside it, and closing
+             the drawer from a menu link left the focused link sitting in a
+             hidden subtree — the state Chrome reports as "Blocked aria-hidden
+             on an element because its descendant retained focus". Going inert
+             makes the browser move focus out itself, so the two can no longer
+             disagree, and it keeps the closed drawer out of the tab order. */
+          inert={!open}
           className="site-overlay__panel bg-accent text-mist"
         >
           <div className="flex h-full flex-col px-gutter pb-8 sm:px-10 sm:pb-10">

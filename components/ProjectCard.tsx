@@ -84,14 +84,28 @@ export default function ProjectCard({
 
           {/* One descriptor, not two. The old row carried the client name
               beside the project name, which for most of these is the same
-              words twice; what earns the column is what the client does. */}
-          <p className="meta col-span-10 text-ink/45 md:col-span-3">{project.industry}</p>
+              words twice; what earns the column is what the client does.
+
+              `min-w-0` because a grid item's automatic minimum size is its
+              content, not its track. These names are set in tracked-out mono
+              and the longest ("Marketing & Communications") is already close to
+              the ten columns it gets at 360; without this it would push past
+              them rather than wrap inside them, since nothing else here is
+              free to give way. */}
+          <p className="meta col-span-10 min-w-0 text-ink/45 md:col-span-3">{project.industry}</p>
 
           <div className="col-span-2 flex items-center justify-end gap-4 md:col-span-2">
             <span className="meta tnum text-ink/35">{project.year}</span>
+            {/* Hidden outright below `md`, not merely transparent. It is a
+                hover cue, and a touch device has no hover to reveal it — but
+                `opacity-0` still reserves its width plus the 1rem gap beside
+                it. This cell is two 4px tracks and one 24px gap wide at 360,
+                so those 30px had nowhere to go: `justify-end` pushed the
+                overflow left and the year sat 4px on top of the industry
+                label. Hiding it gives the year the cell to itself. */}
             <span
               aria-hidden="true"
-              className="-translate-x-2 text-accent opacity-0 transition-all duration-600 ease-expo group-hover:translate-x-0 group-hover:opacity-100"
+              className="hidden -translate-x-2 text-accent opacity-0 transition-all duration-600 ease-expo group-hover:translate-x-0 group-hover:opacity-100 md:inline"
             >
               ↗
             </span>

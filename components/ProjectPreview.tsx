@@ -168,10 +168,30 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
           </button>
         </div>
 
-        {/* Below `lg` this is one column and the whole body scrolls. From `lg`
-            the media column holds still and only the reading column moves, so
-            the screenshot stays put while you read past it. */}
-        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-2 lg:overflow-hidden">
+        {/* Two layouts out of one DOM.
+
+            From `lg` this is the approved two-column composition: the media
+            column holds the screenshot with its facts and technology beneath,
+            the reading column scrolls beside it, and each column owns its own
+            overflow so the screenshot stays put while you read past it.
+
+            Below `lg` both column wrappers go `display: contents`, which drops
+            them out of the box tree and lets their seven blocks become direct
+            children of this flex column. That is what allows a mobile reading
+            order — image, title, summary, facts, technology, problem, solution,
+            CTA — to interleave blocks that live in different columns on
+            desktop, using `order` alone and without a second copy of the markup.
+
+            It is also the fix for the overlap this had at every width under
+            1024. As a grid, the two column tracks were sized by this box rather
+            than by their content: at 390x844 the rows resolved to 328 and 375
+            inside a 705px body while the content needed 960, and because each
+            column carried `min-h-0` it shrank to its track and painted its
+            overflow straight over the next one — Status and Year across the
+            project title, the technology chips across the summary. A flex
+            column of `shrink-0` blocks cannot compress that way, so the body
+            simply scrolls. */}
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:grid lg:grid-cols-2 lg:overflow-hidden">
           {/* The media column sizes to the screenshots' own ratio — all three
               are 1600×900, so a true 16:9 box leaves `object-contain` nothing
               to letterbox and nothing to crop. It deliberately does not
@@ -179,16 +199,17 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
               forced the earlier crop. The facts and technology sit beneath it,
               which is what turns the leftover height into something useful
               instead of bare canvas — and shortens the reading column enough
-              that most projects need no scrolling at all. */}
-          {/* Scrolls only when it has to. At ordinary window heights the image
+              that most projects need no scrolling at all.
+
+              Scrolls only when it has to. At ordinary window heights the image
               and its metadata fit and this column never moves; on a short
               viewport it scrolls rather than letting the technology row fall
               past the bottom of the frame, which is what a plain `hidden`
               here did at 1280x640 and below. */}
-          <div className="flex min-h-0 flex-col border-b border-hairline lg:overflow-y-auto lg:border-b-0 lg:border-r">
+          <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:overflow-y-auto lg:border-r lg:border-hairline">
             <div
               data-preview-item
-              className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-bone"
+              className="relative order-1 aspect-[16/9] w-full shrink-0 overflow-hidden bg-bone lg:order-none"
             >
               <Image
                 src={project.image}
@@ -199,7 +220,12 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
               />
             </div>
 
-            <div data-preview-item className="border-t border-hairline p-6 lg:p-10">
+            {/* Facts stay two columns at every width — four short values that
+                read as pairs, not a list worth stacking into one narrow file. */}
+            <div
+              data-preview-item
+              className="order-4 mt-8 shrink-0 border-t border-hairline p-6 lg:order-none lg:mt-0 lg:p-10 lg:pb-6"
+            >
               <dl className="grid grid-cols-2 gap-x-6 gap-y-6">
                 <div>
                   <dt className="meta text-ink/35">Deliverables</dt>
@@ -226,33 +252,44 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
                   <dd className="tnum mt-2 text-sm text-ink/70">{project.year}</dd>
                 </div>
               </dl>
+            </div>
 
-              <div className="mt-6 border-t border-hairline pt-6">
-                <p className="meta text-ink/35">Technology</p>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {project.technology.map((t) => (
-                    <li key={t} className="micro border border-hairline px-2 py-1 text-ink/50">
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* Its own block rather than a nested rule inside the facts box:
+                on mobile it has to be orderable independently of them. */}
+            <div
+              data-preview-item
+              className="order-5 shrink-0 border-t border-hairline p-6 lg:order-none lg:px-10 lg:pb-10 lg:pt-6"
+            >
+              <p className="meta text-ink/35">Technology</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {project.technology.map((t) => (
+                  <li key={t} className="micro border border-hairline px-2 py-1 text-ink/50">
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-col gap-8 p-6 lg:overflow-y-auto lg:p-10">
-            <div data-preview-item>
+          <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:gap-8 lg:overflow-y-auto lg:p-10">
+            <div data-preview-item className="order-2 shrink-0 px-6 pt-8 lg:order-none lg:p-0">
               <h2 className="text-headline font-medium">{project.title}</h2>
               <p className="meta mt-3 text-ink/45">
                 {project.industry} — {project.year}
               </p>
             </div>
 
-            <p data-preview-item className="text-sm leading-relaxed text-ink/60">
+            <p
+              data-preview-item
+              className="order-3 shrink-0 px-6 pt-5 text-sm leading-relaxed text-ink/60 lg:order-none lg:p-0"
+            >
               {project.summary}
             </p>
 
-            <div data-preview-item className="space-y-6 border-t border-hairline pt-6">
+            <div
+              data-preview-item
+              className="order-6 mt-8 shrink-0 space-y-6 border-t border-hairline p-6 lg:order-none lg:mt-0 lg:px-0 lg:pb-0 lg:pt-6"
+            >
               <div>
                 <p className="meta text-accent">Problem</p>
                 <p className="mt-3 text-sm leading-relaxed text-ink/70">{project.problem}</p>
@@ -265,7 +302,7 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
 
             <div
               data-preview-item
-              className="mt-auto flex flex-wrap items-center gap-6 border-t border-hairline pt-6"
+              className="order-7 flex shrink-0 flex-wrap items-center gap-6 border-t border-hairline p-6 lg:order-none lg:mt-auto lg:px-0 lg:pb-0 lg:pt-6"
             >
               {project.href ? (
                 <BracketLink href={project.href} variant="framed">

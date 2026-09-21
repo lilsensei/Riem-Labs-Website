@@ -135,10 +135,22 @@ export default function Footer() {
                 211px of visible white between Index and Services and 60px
                 between Services and Legal. The boxes were even; the ink was not.
             
-                From 1180px each column shrinks to its own content and
-                `justify-between` splits the leftover space equally, so the gaps a
-                reader actually sees are the same. The cap keeps the group
-                finishing short of the right content axis rather than on it.
+                From 1180px each column shrinks to its own content and the three
+                sit together against the right of the group on one shared gap,
+                so the gaps a reader actually sees are the same. The cap keeps
+                the group finishing short of the right content axis rather than
+                on it.
+
+                `justify-end` with an explicit gap, not `justify-between`:
+                between splits *all* the leftover width across the two gaps, so
+                at 1920 the columns stood 191px apart — mathematically even and
+                far too open to read as one group. Ending the row instead pins
+                Legal exactly where it already was, since the group's right edge
+                is what it sits against, and draws Services and Index in toward
+                it. The gap is clamped rather than fixed because at 1180 the
+                group has only 133px of slack to spend on two gaps; 3.5rem fits
+                that with room, and it opens to 5.5rem on a wide desktop so the
+                cluster still breathes.
 
                 1180, not `lg`: the three auto-width columns measure 61, 212 and
                 112px and carry two 48px gaps, so they need 481px. At 1024 this
@@ -148,7 +160,7 @@ export default function Footer() {
                 columns above it. Below 1180 the layout now stays in the state it
                 already used under `lg`: fixed 192px columns with Legal as a
                 full-width row, which is a composition rather than an accident. */}
-            <div className="flex flex-wrap items-start gap-x-12 gap-y-10 min-[1180px]:max-w-3xl min-[1180px]:flex-1 min-[1180px]:justify-between">
+            <div className="flex flex-wrap items-start gap-x-12 gap-y-10 min-[1180px]:max-w-3xl min-[1180px]:flex-1 min-[1180px]:justify-end min-[1180px]:gap-x-[clamp(3.5rem,4.2vw,5.5rem)]">
               <Column title="Index">
                 {navigation.map((item) => (
                   <li key={item.href}>
