@@ -216,7 +216,7 @@ export default function HeaderBar({
               className={`h-1.5 w-1.5 rounded-full animate-pulse-dot ${badgeDot}`}
             />
             <span data-header-tone={isReveal ? undefined : ""} className={`micro ${badgeTone}`}>
-              Available for Hire
+              {site.availability}
             </span>
           </span>
         ) : null}

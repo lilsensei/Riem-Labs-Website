@@ -21,6 +21,14 @@ type ProjectCardProps = {
    *  glyph, choreographed on hover. Unused (and unneeded) in card layout. */
   choreography?: Choreography;
   glyphColor?: GlyphColor;
+  /**
+   * Heading level for the project title. Defaults to 3, which is right on the
+   * home page, where these sit under the Selected work section's own h2. The
+   * dedicated /work page has no such section heading — the cards follow the
+   * page h1 directly — so WorkGallery passes 2 and the outline stops skipping
+   * a level. Styling is identical either way; only the tag changes.
+   */
+  headingLevel?: 2 | 3;
 };
 
 export default function ProjectCard({
@@ -30,8 +38,10 @@ export default function ProjectCard({
   reveal = true,
   choreography,
   glyphColor,
+  headingLevel = 3,
 }: ProjectCardProps) {
   const revealAttr = reveal ? { "data-reveal-fade": "" } : {};
+  const Heading = (headingLevel === 2 ? "h2" : "h3") as "h2" | "h3";
   const glyphRef = useRef<GlyphHandle>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -68,9 +78,9 @@ export default function ProjectCard({
             </span>
           )}
 
-          <h3 className="col-span-10 text-title font-medium transition-[color,transform] duration-600 ease-expo group-hover:translate-x-2 group-hover:text-accent md:col-span-6">
+          <Heading className="col-span-10 text-title font-medium transition-[color,transform] duration-600 ease-expo group-hover:translate-x-2 group-hover:text-accent md:col-span-6">
             {project.title}
-          </h3>
+          </Heading>
 
           {/* One descriptor, not two. The old row carried the client name
               beside the project name, which for most of these is the same
@@ -146,7 +156,7 @@ export default function ProjectCard({
 
       <div className="mt-5 flex items-start justify-between gap-6">
         <div>
-          <h3 className="text-title font-medium">
+          <Heading className="text-title font-medium">
             {onPreview ? (
               <button
                 type="button"
@@ -167,7 +177,7 @@ export default function ProjectCard({
             ) : (
               project.title
             )}
-          </h3>
+          </Heading>
           <p className="meta mt-2 text-ink/45">{project.industry}</p>
         </div>
         <span className="meta tnum shrink-0 text-ink/35">{project.year}</span>

@@ -124,7 +124,7 @@ export default function ContactPage() {
                 <Fade className="mt-12 border border-hairline p-6">
                   <p className="meta flex items-center gap-2 text-ink/60">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" />
-                    Available for select projects
+                    {site.availability}
                   </p>
                   <AvailabilityLine />
                 </Fade>

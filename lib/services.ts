@@ -73,7 +73,7 @@ export const services: Service[] = [
       "Automated reporting workflows",
       "Data pipelines and structured datasets",
     ],
-    stack: ["Python", "SQL", "Data Viz", "Predictive"],
+    stack: ["Python", "SQL", "Data Viz", "Predictive Modeling"],
     duration: "3–6 weeks",
   },
   {

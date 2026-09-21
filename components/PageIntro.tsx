@@ -23,12 +23,6 @@ type PageIntroProps = {
    *  so the default has to be left out entirely rather than fought with a
    *  second class. */
   headlineClassName?: string;
-  /**
-   * Trims 2rem off the masthead’s desktop top padding. Opt-in, because it
-   * only matters where the headline is short enough that the lede and facts
-   * would otherwise start below the fold on a 900px-tall viewport.
-   */
-  tighterTop?: boolean;
 };
 
 /** Shared masthead for the interior pages. Corner anchors frame the type. */
@@ -40,17 +34,15 @@ export default function PageIntro({
   meta = [],
   showClock = true,
   headlineClassName = "text-display",
-  tighterTop = false,
 }: PageIntroProps) {
   return (
     <RevealSection className="relative">
-      <div
-        className={`shell pb-16 pt-[calc(var(--header-h)+4rem)] lg:pb-24 ${
-          tighterTop
-            ? "lg:pt-[calc(var(--header-h)+5rem)]"
-            : "lg:pt-[calc(var(--header-h)+7rem)]"
-        }`}
-      >
+      {/* One top spacing for every interior masthead. About used to trim 2rem
+          off this, from a time its headline ran to two lines and pushed the
+          facts below the fold; at three lines the facts clear the fold here
+          anyway, and the exception only left About sitting 32px off the axis
+          Work, Services, Contact and the legal pages share. */}
+      <div className="shell pb-16 pt-[calc(var(--header-h)+4rem)] lg:pb-24 lg:pt-[calc(var(--header-h)+7rem)]">
         <RevealBlock onLoad>
           {/* Corner anchors */}
           <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 hairline-b pb-5">

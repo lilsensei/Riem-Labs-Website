@@ -37,7 +37,10 @@ export default function CTABanner({
       <div className="shell py-section">
         <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 border-t border-canvas/15 pt-5">
           <p className="meta flex items-baseline gap-2">
-            <span className="tnum text-accent">{index}</span>
+            {/* `accent-on-dark`, not the brand blue: this is 11px on ink,
+                where #1B17FF measures 2.42:1. Everything else here is
+                canvas-toned, so this is the only mark that needs it. */}
+            <span className="tnum text-accent-on-dark">{index}</span>
             <span className="text-canvas/25">/</span>
             <span className="text-canvas">{label}</span>
           </p>

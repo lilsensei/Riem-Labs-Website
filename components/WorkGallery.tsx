@@ -71,6 +71,7 @@ export default function WorkGallery() {
             project={project}
             onPreview={setPreview}
             reveal={false}
+            headingLevel={2}
           />
         ))}
       </div>

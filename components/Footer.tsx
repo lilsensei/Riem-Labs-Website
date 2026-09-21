@@ -30,12 +30,12 @@ const FOOTER_SOCIALS = (["linkedin", "instagram", "whatsapp"] as const).map((ico
 function Column({
   title,
   children,
-  navClassName = "w-40 shrink-0 sm:w-48 lg:w-auto",
+  navClassName = "w-40 shrink-0 sm:w-48 min-[1180px]:w-auto",
 }: {
   title: string;
   children: React.ReactNode;
-  /** Legal overrides this to grow past the fixed 160/192px width through
-   *  `lg:` — see its own call site for why. */
+  /** Legal overrides this to grow past the fixed 160/192px width below the
+   *  three-column width — see its own call site for why. */
   navClassName?: string;
 }) {
   return (
@@ -94,7 +94,7 @@ export default function Footer() {
             <div className="min-w-[16rem] max-w-[50rem] flex-1">
               <p className="meta inline-flex items-center gap-2.5 text-ink/45">
                 <span className="status-dot" aria-hidden="true" />
-                Available for new projects
+                {site.availability}
               </p>
 
               {/* Authored lines, not measured ones — same convention the
@@ -135,11 +135,20 @@ export default function Footer() {
                 211px of visible white between Index and Services and 60px
                 between Services and Legal. The boxes were even; the ink was not.
             
-                From `lg` each column shrinks to its own content and
+                From 1180px each column shrinks to its own content and
                 `justify-between` splits the leftover space equally, so the gaps a
                 reader actually sees are the same. The cap keeps the group
-                finishing short of the right content axis rather than on it. */}
-            <div className="flex flex-wrap items-start gap-x-12 gap-y-10 lg:max-w-3xl lg:flex-1 lg:justify-between">
+                finishing short of the right content axis rather than on it.
+
+                1180, not `lg`: the three auto-width columns measure 61, 212 and
+                112px and carry two 48px gaps, so they need 481px. At 1024 this
+                group only gets 445 — it splits the row with the headline block,
+                which holds a 16rem floor — so Legal wrapped to a second line on
+                its own, at its narrow content width, orphaned beside the two
+                columns above it. Below 1180 the layout now stays in the state it
+                already used under `lg`: fixed 192px columns with Legal as a
+                full-width row, which is a composition rather than an accident. */}
+            <div className="flex flex-wrap items-start gap-x-12 gap-y-10 min-[1180px]:max-w-3xl min-[1180px]:flex-1 min-[1180px]:justify-between">
               <Column title="Index">
                 {navigation.map((item) => (
                   <li key={item.href}>
@@ -160,8 +169,8 @@ export default function Footer() {
                 ))}
               </Column>
 
-              {/* w-auto through lg:, back to the shared w-48 once the button
-                  below is hidden — Legal's own fixed 160px column had no room
+              {/* w-auto once the row is wide enough for three columns, back
+                  to a full-width row of its own below that — Legal's own fixed 160px column had no room
                   left for "[ Back to top ]" (118px) next to "Refund Policy"
                   (64px) in a 12px gap, so it wrapped to two lines. Growing the
                   nav itself, rather than trying to fit the button inside a
@@ -169,7 +178,7 @@ export default function Footer() {
                   space the row already has once Legal wraps onto its own
                   line at this width — no absolute positioning, no guessing
                   Refund Policy's exact vertical offset to match against. */}
-              <Column title="Legal" navClassName="w-full shrink-0 lg:w-auto">
+              <Column title="Legal" navClassName="w-full shrink-0 min-[1180px]:w-auto">
                 {legalLinks.map((link, i) => {
                   const isLast = i === legalLinks.length - 1;
                   const anchor = (

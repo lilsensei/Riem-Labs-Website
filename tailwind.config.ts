@@ -25,7 +25,15 @@ const config: Config = {
         ink: "#0D0D0D",
         hairline: "#E0E0DC",
         // Accent / interactive token — matches the brand mark exactly.
-        accent: "#1B17FF",
+        // `on-dark` is the same hue and saturation lifted in lightness until
+        // it clears WCAG AA (4.5:1) against `ink`; the brand blue itself only
+        // reaches 2.42:1 there, which is fine for a 104px headline but not for
+        // the 11px index on the inverted CTA. Light surfaces keep the brand
+        // blue, which already clears AA comfortably (8.04:1 on canvas).
+        accent: {
+          DEFAULT: "#1B17FF",
+          "on-dark": "#6865FF",
+        },
         // Hero dual-layer palette. Layer 1 is mist/graphite; the reveal layer
         // inverts to accent/mist.
         mist: "#F6F6F4",

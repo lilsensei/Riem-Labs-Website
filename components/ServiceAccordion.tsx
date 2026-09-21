@@ -49,7 +49,12 @@ function AccordionRow({
 
   return (
     <div id={`service-${slug}`} data-service={slug} className="scroll-mt-[calc(var(--header-h)+2rem)] border-b border-hairline">
-      <h3>
+      {/* h2, not h3: this accordion is only ever the offerings list on
+          /services, where the rows are the first headings under the page
+          h1 and sit alongside the Engagement models and Process section
+          headings. The home page uses ServiceCard, which stays h3 under
+          its own section h2. */}
+      <h2>
         <button
           type="button"
           id={buttonId}
@@ -113,7 +118,7 @@ function AccordionRow({
             </span>
           </span>
         </button>
-      </h3>
+      </h2>
 
       <div
         id={panelId}

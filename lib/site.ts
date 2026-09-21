@@ -13,7 +13,11 @@ export const site = {
   timeZone: "Africa/Nairobi",
   timeZoneLabel: "EAT",
   founded: 2026,
-  availability: "Available for hire — Q3 2026",
+  /** The one availability line the whole site reads from — header badge,
+   *  footer status and the contact aside alike. Deliberately undated: the
+   *  previous "Q3 2026" wording expired on a fixed calendar date and had
+   *  drifted into three different hand-written variants across the site. */
+  availability: "Available for select projects",
 } as const;
 
 export type NavItem = {
@@ -53,7 +57,12 @@ export function whatsappHref(message?: string) {
 /** `icon` keys the inline mark the footer draws for each. */
 export const socials = [
   { label: "WhatsApp", href: whatsappHref(), icon: "whatsapp" },
-  { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/riemlabs?stkn=a3l4bnRhMHR6cmQ5",
+    icon: "instagram",
+  },
+  /** The public Company Page, not a personal profile or an admin view. */
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/riem-labs/", icon: "linkedin" },
   { label: "GitHub", href: "https://github.com", icon: "github" },
 ] as const;

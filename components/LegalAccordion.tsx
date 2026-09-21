@@ -64,7 +64,7 @@ function LegalRow({ section }: { section: LegalSection }) {
           onClick={() => setOpen((current) => !current)}
           aria-expanded={open}
           aria-controls={panelId}
-          className="group grid w-full grid-cols-12 items-baseline gap-x-gutter gap-y-3 py-8 text-left transition-colors duration-400 ease-expo hover:text-accent lg:py-10"
+          className="group grid w-full grid-cols-12 items-center gap-x-gutter gap-y-3 py-8 text-left transition-colors duration-400 ease-expo hover:text-accent lg:py-10"
         >
           <span className="micro tnum col-span-2 text-accent md:col-span-1 md:col-start-1">
             {section.index}
@@ -76,6 +76,22 @@ function LegalRow({ section }: { section: LegalSection }) {
             }`}
           >
             {section.title}
+          </span>
+
+          {/* Before the plus in source order, not after — and that ordering is
+              load-bearing, not cosmetic. The plus is pinned to `col-start-12`;
+              once grid auto-placement has filled that far along row one, a
+              following item asking for `col-start-7` can no longer fit beside
+              it and is pushed onto a row of its own. That is what left the
+              brief hanging a full line below the title while the services
+              accordion, whose supporting line comes first, sat level. Same
+              markup order here, same result.
+
+              `col-start-3` on narrow layouts so the brief sits under the title
+              rather than under the index number, and it takes the row's hover
+              with the rest of the control. */}
+          <span className="col-span-10 col-start-3 text-sm leading-relaxed text-ink/55 transition-colors duration-400 ease-expo group-hover:text-accent md:col-span-5 md:col-start-7">
+            {section.brief}
           </span>
 
           {/* Plus → minus: the same mark the Services accordion draws, so the
@@ -92,14 +108,6 @@ function LegalRow({ section }: { section: LegalSection }) {
                 }`}
               />
             </span>
-          </span>
-
-          {/* `col-start-3` on narrow layouts so the brief sits under the title
-              rather than under the index number, and it takes the row's hover
-              with the rest of the control — the same arrangement the services
-              accordion's own supporting line uses. */}
-          <span className="col-span-10 col-start-3 text-sm leading-relaxed text-ink/55 transition-colors duration-400 ease-expo group-hover:text-accent md:col-span-5 md:col-start-7">
-            {section.brief}
           </span>
         </button>
       </h2>

@@ -25,7 +25,6 @@ export default function AboutPage() {
         lines={["Built around how", "the business", "actually works."]}
         lede="Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems. We start by understanding the business, then shape the right combination of design, software and operational tooling around what it actually needs."
         showClock={false}
-        tighterTop
         meta={[
           { label: "Founded", value: `${site.founded} — ${site.city}` },
           { label: "Practice", value: "Independent" },
