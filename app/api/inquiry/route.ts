@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { Configuration, SendApi } from "hostinger-mail-api-sdk";
 import {
   MAX_BODY_BYTES,
   inquiryHtml,
@@ -13,9 +13,9 @@ import { checkRateLimit, clientKey } from "@/lib/rateLimit";
 /**
  * Contact inquiries.
  *
- * Email only for now: validate, then send. When inquiries are stored as well,
- * the insert goes between those two steps — marked below — and nothing else in
- * this file needs to move.
+ * Email only for now: validate, then send through the Hostinger-managed
+ * mailbox. When inquiries are stored as well, the insert goes between those
+ * two steps — marked below — and nothing else in this file needs to move.
  *
  * Only POST is exported, so Next answers anything else with 405 on its own.
  */
@@ -93,16 +93,21 @@ export async function POST(request: Request) {
   // so a record exists even if the mail provider is having a bad day.
 
   // ---- 7. Send ------------------------------------------------------------
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.INQUIRY_FROM_EMAIL;
+  const token = process.env.HOSTINGER_MAIL_API_TOKEN;
+  const mailboxId = process.env.HOSTINGER_MAILBOX_ID;
   const to = process.env.INQUIRY_TO_EMAIL;
 
-  if (!apiKey || !from || !to) {
+  if (!token || !mailboxId || !to) {
     // A configuration problem, not the visitor's. Say so in the log, where the
     // people who can fix it will look, and keep the public answer generic.
+    // Only the names are logged — never a value.
     console.error(
       "[inquiry] missing configuration:",
-      [!apiKey && "RESEND_API_KEY", !from && "INQUIRY_FROM_EMAIL", !to && "INQUIRY_TO_EMAIL"]
+      [
+        !token && "HOSTINGER_MAIL_API_TOKEN",
+        !mailboxId && "HOSTINGER_MAILBOX_ID",
+        !to && "INQUIRY_TO_EMAIL",
+      ]
         .filter(Boolean)
         .join(", "),
     );
@@ -110,25 +115,23 @@ export async function POST(request: Request) {
   }
 
   try {
-    const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from,
+    // The sender is the managed mailbox itself — the token authorises that one
+    // mailbox, and the API takes no `from`. There is also no Reply-To field in
+    // the payload, so the visitor's address is carried in the body, both as a
+    // field and as a one-click mailto link; see lib/inquiry.ts. `displayName`
+    // puts their name in the From line so the inbox still reads at a glance.
+    const send = new SendApi(new Configuration({ accessToken: token }));
+    await send.sendEmail(mailboxId, {
       to: [to],
+      displayName: `${inquiry.name} via riemlabs.dev`,
       subject: inquirySubject(inquiry),
       text: inquiryText(inquiry),
       html: inquiryHtml(inquiry),
-      // Replying to the notification replies to the visitor, not to ourselves.
-      replyTo: inquiry.email,
-    });
-
-    if (error) {
-      // The provider's own message can name accounts, domains and keys, so it
-      // goes to the server log and never to the browser.
-      console.error("[inquiry] resend rejected the send:", error);
-      return fail("submission_failed", "We could not send that just now.", 502);
-    }
+    } as Parameters<SendApi["sendEmail"]>[1]);
   } catch (cause) {
-    console.error("[inquiry] send threw:", cause);
+    // The provider's own error can name mailboxes, tokens and internals, so it
+    // goes to the server log and never to the browser.
+    console.error("[inquiry] hostinger rejected the send:", cause);
     return fail("submission_failed", "We could not send that just now.", 502);
   }
 

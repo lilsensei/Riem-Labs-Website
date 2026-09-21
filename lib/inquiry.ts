@@ -1,7 +1,8 @@
 /**
  * The contact inquiry, server side.
  *
- * Everything here is framework-agnostic and has no Resend or Next import, so
+ * Everything here is framework-agnostic and imports neither Next nor the mail
+ * provider, so
  * the route handler stays a thin shell: parse, validate, act. When inquiries
  * start being stored as well as emailed, the insert goes between `validate`
  * and the send in the route — nothing in this file has to change to allow it.
@@ -156,10 +157,18 @@ export function inquirySubject(inquiry: Inquiry) {
 /** Plain text first: it is the one part guaranteed to render anywhere. */
 export function inquiryText(inquiry: Inquiry) {
   const rows = FIELD_ORDER.map(([label, get]) => `${label}: ${get(inquiry)}`).join("\n");
-  return `${rows}\n\nBrief:\n${inquiry.message}\n`;
+  return `${rows}\n\nReply to: ${inquiry.email}\n\nBrief:\n${inquiry.message}\n`;
 }
 
-/** Deliberately plain — a readable record, not a designed email. */
+/**
+ * Deliberately plain — a readable record, not a designed email.
+ *
+ * Carries a mailto link to the visitor because the Hostinger Mail API has no
+ * Reply-To field: its send payload is to/cc/bcc/subject/text/html/attachments
+ * and nothing else, and `inReplyTo` is message threading rather than the
+ * header. The mailbox sends to itself, so hitting Reply would answer us. One
+ * click on this opens a reply addressed to the visitor instead.
+ */
 export function inquiryHtml(inquiry: Inquiry) {
   const rows = FIELD_ORDER.map(
     ([label, get]) =>
@@ -172,6 +181,9 @@ export function inquiryHtml(inquiry: Inquiry) {
     `<div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;line-height:1.6;color:#111">`,
     `<p style="margin:0 0 16px;font-weight:600">New inquiry from the Riem Labs contact form</p>`,
     `<table style="border-collapse:collapse;margin:0 0 20px">${rows}</table>`,
+    `<p style="margin:0 0 20px"><a href="mailto:${encodeURI(inquiry.email)}" style="color:#1B17FF">Reply to ${escapeHtml(
+      inquiry.name,
+    )}</a></p>`,
     `<p style="margin:0 0 6px;color:#666">Brief</p>`,
     // white-space:pre-wrap so the visitor's own paragraphs survive
     `<div style="white-space:pre-wrap;padding:12px 14px;background:#f5f5f2;border-left:2px solid #1B17FF">${escapeHtml(
