@@ -172,9 +172,9 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
             the media column holds still and only the reading column moves, so
             the screenshot stays put while you read past it. */}
         <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-2 lg:overflow-hidden">
-          {/* The media column sizes to the screenshot's own ratio (1453×846)
-              rather than a nominal 16:9, so `object-contain` has nothing to
-              letterbox and nothing is cropped. It deliberately does not
+          {/* The media column sizes to the screenshots' own ratio — all three
+              are 1600×900, so a true 16:9 box leaves `object-contain` nothing
+              to letterbox and nothing to crop. It deliberately does not
               stretch to the row: matching the taller reading column is what
               forced the earlier crop. The facts and technology sit beneath it,
               which is what turns the leftover height into something useful
@@ -188,7 +188,7 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
           <div className="flex min-h-0 flex-col border-b border-hairline lg:overflow-y-auto lg:border-b-0 lg:border-r">
             <div
               data-preview-item
-              className="relative aspect-[1453/846] w-full shrink-0 overflow-hidden bg-bone"
+              className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-bone"
             >
               <Image
                 src={project.image}

@@ -31,7 +31,10 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
       const fades = gsap.utils.toArray<HTMLElement>(FADE_SELECTOR, root);
 
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set([...lines, ...fades], { clearProps: "all", yPercent: 0, y: 0, opacity: 1 });
+        const all = [...lines, ...fades];
+        if (all.length > 0) {
+          gsap.set(all, { clearProps: "all", yPercent: 0, y: 0, opacity: 1 });
+        }
         return;
       }
 
@@ -47,8 +50,12 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
       // 0.18em of descender padding `.reveal-line` now carries, so clearing it
       // takes ~118% of the line's own height; 110 left a band of the line's
       // top edge sitting inside the box, visible before the tween started.
-      gsap.set(lines, { yPercent: 120, y: 0, opacity: 0 });
-      gsap.set(fades, { yPercent: 0, y: 18, opacity: 0 });
+      // Guarded the same way the per-block tweens below are: a scope that
+      // holds no reveal targets is legitimate (several sections wrap content
+      // that reveals by other means), and handing gsap.set an empty array
+      // makes it warn "GSAP target not found" on every such mount.
+      if (lines.length > 0) gsap.set(lines, { yPercent: 120, y: 0, opacity: 0 });
+      if (fades.length > 0) gsap.set(fades, { yPercent: 0, y: 18, opacity: 0 });
 
       const explicit = gsap.utils.toArray<HTMLElement>("[data-reveal-block]", root);
       const blocks = explicit.length > 0 ? explicit : [root as HTMLElement];

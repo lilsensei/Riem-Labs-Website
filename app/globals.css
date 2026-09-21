@@ -269,16 +269,23 @@
   }
 
   /* ---- Project preview backdrop -----------------------------------------
-     Near-opaque, so the work index behind it stops being readable and the
-     panel has the screen to itself. An earlier version ran this at 28% with
-     a heavy blur, which left the cards behind plainly recognisable and split
-     the attention between the two. The blur that remains only softens the
-     little that still reads at the edges; the tint is what does the work, so
-     nothing extra is needed where `backdrop-filter` is unsupported. */
+     Translucent, not a blackout. The page behind should still register as
+     being there — shapes, the ghost of the grid — without any of it staying
+     legible enough to compete with the panel. Two earlier attempts bracket
+     this one: 28% with a heavy blur left the cards plainly readable, and 97%
+     removed the page altogether. The tint carries most of the separation and
+     the blur takes the remaining legibility out of whatever shows through,
+     so where `backdrop-filter` is unsupported the tint alone still reads as
+     a deliberate scrim rather than a clear pane. */
   .preview-backdrop {
-    background: rgb(13 13 13 / 0.97);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgb(13 13 13 / 0.62);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .preview-backdrop {
+      background: rgb(13 13 13 / 0.82);
+    }
   }
 
   /* ---- Legal disclosure panels ----------------------------------------

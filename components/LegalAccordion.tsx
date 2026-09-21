@@ -64,14 +64,14 @@ function LegalRow({ section }: { section: LegalSection }) {
           onClick={() => setOpen((current) => !current)}
           aria-expanded={open}
           aria-controls={panelId}
-          className="grid w-full grid-cols-12 items-start gap-x-gutter gap-y-4 py-10 text-left transition-colors duration-400 ease-expo hover:text-accent"
+          className="group grid w-full grid-cols-12 items-baseline gap-x-gutter gap-y-3 py-8 text-left transition-colors duration-400 ease-expo hover:text-accent lg:py-10"
         >
           <span className="micro tnum col-span-2 text-accent md:col-span-1 md:col-start-1">
             {section.index}
           </span>
 
           <span
-            className={`col-span-8 text-title font-medium transition-colors duration-400 ease-expo md:col-span-4 md:col-start-2 ${
+            className={`col-span-8 text-title font-medium transition-colors duration-400 ease-expo md:col-span-5 md:col-start-2 ${
               open ? "text-accent" : ""
             }`}
           >
@@ -94,7 +94,11 @@ function LegalRow({ section }: { section: LegalSection }) {
             </span>
           </span>
 
-          <span className="col-span-12 text-sm leading-relaxed text-ink/55 md:col-span-5 md:col-start-7">
+          {/* `col-start-3` on narrow layouts so the brief sits under the title
+              rather than under the index number, and it takes the row's hover
+              with the rest of the control — the same arrangement the services
+              accordion's own supporting line uses. */}
+          <span className="col-span-10 col-start-3 text-sm leading-relaxed text-ink/55 transition-colors duration-400 ease-expo group-hover:text-accent md:col-span-5 md:col-start-7">
             {section.brief}
           </span>
         </button>
@@ -127,10 +131,17 @@ function LegalRow({ section }: { section: LegalSection }) {
 /** The shared legal document body — Terms, Privacy and Refunds all use it. */
 export default function LegalAccordion({ sections }: { sections: LegalSection[] }) {
   return (
-    <div className="border-t border-hairline">
-      {sections.map((section) => (
-        <LegalRow key={section.index} section={section} />
-      ))}
+    <div>
+      {/* The same cue the services accordion carries, in the same meta
+          treatment — these rows disclose the same way, so they should say so
+          the same way. */}
+      <p className="meta mb-6 text-right text-ink/50">Select to expand</p>
+
+      <div className="border-t border-hairline">
+        {sections.map((section) => (
+          <LegalRow key={section.index} section={section} />
+        ))}
+      </div>
     </div>
   );
 }

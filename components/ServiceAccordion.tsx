@@ -22,7 +22,9 @@ function AccordionRow({
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const glyphRef = useRef<GlyphHandle>(null);
-  const panelId = useId();
+  const id = useId();
+  const panelId = `${id}-panel`;
+  const buttonId = `${id}-button`;
   const [hovered, setHovered] = useState(false);
   const slug = serviceSlug(service.title);
 
@@ -50,6 +52,7 @@ function AccordionRow({
       <h3>
         <button
           type="button"
+          id={buttonId}
           onClick={onToggle}
           onMouseEnter={() => {
             setHovered(true);
@@ -116,7 +119,13 @@ function AccordionRow({
         id={panelId}
         ref={contentRef}
         role="region"
-        aria-hidden={!open}
+        aria-labelledby={buttonId}
+        // `inert`, not aria-hidden — the same choice, for the same reason, as
+        // the legal accordion next door: a collapsed panel still holds a real
+        // "Scope this" link, and aria-hidden alone leaves it in the tab order
+        // while hiding it from assistive tech. With every row closed by
+        // default that was four invisible tab stops on arrival.
+        inert={!open}
         className="h-0 overflow-hidden opacity-0"
       >
         <div className="grid gap-x-gutter gap-y-10 pb-14 md:grid-cols-12">
@@ -164,7 +173,12 @@ function AccordionRow({
 
 /** Expandable breakdown of the studio's four offerings. One open at a time. */
 export default function ServiceAccordion({ services }: { services: Service[] }) {
-  const [openIndex, setOpenIndex] = useState<string | null>(services[0]?.index ?? null);
+  // Closed by default. Arriving at /services from the menu, the home page's
+  // "Explore all services" or a direct URL should present the four offerings
+  // as equal choices — opening the first one on load made it look picked out
+  // for a reason, and the reason never existed. The only thing that opens a
+  // row on arrival is a deep link naming that row, handled below.
+  const [openIndex, setOpenIndex] = useState<string | null>(null);
 
   // Deep-link support: /services#<slug> (e.g. from a home-page Services
   // card) opens that specific accordion row and scrolls it into view,
