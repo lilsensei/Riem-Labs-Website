@@ -109,39 +109,3 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
 
   return scope;
 }
-
-/**
- * Counts a numeric metric up when it scrolls into view.
- * Returns a ref for the element whose textContent should be driven.
- */
-export function useCountUp(target: number, decimals = 0) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        el.textContent = target.toFixed(decimals);
-        return;
-      }
-
-      const counter = { value: 0 };
-      el.textContent = "0";
-
-      gsap.to(counter, {
-        value: target,
-        duration: 1.9,
-        ease: EASE,
-        scrollTrigger: { trigger: el, start: "top 92%", once: true },
-        onUpdate: () => {
-          el.textContent = counter.value.toFixed(decimals);
-        },
-      });
-    },
-    { dependencies: [target, decimals] },
-  );
-
-  return ref;
-}
