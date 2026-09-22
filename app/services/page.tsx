@@ -1,19 +1,23 @@
 import type { Metadata } from "next";
 import CTABanner from "@/components/CTABanner";
 import GlyphPanel from "@/components/GlyphPanel";
+import JsonLd from "@/components/JsonLd";
 import LogoMarquee from "@/components/LogoMarquee";
 import PageIntro from "@/components/PageIntro";
 import RevealSection from "@/components/RevealSection";
 import SectionHeader from "@/components/SectionHeader";
 import ServiceAccordion from "@/components/ServiceAccordion";
 import { CHOREO_OFFSETS, choreographyPool } from "@/lib/glyphChoreographies";
+import { breadcrumbSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 import { process, services } from "@/lib/services";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/services",
   title: "Services",
   description:
-    "Websites & digital products, business systems & automation, data & analytics, and AI & intelligent workflows — the four ways Riem Labs helps businesses move from friction to better systems.",
-};
+    "Explore Riem Labs services across websites and digital products, business systems and automation, data and analytics, and intelligent workflows.",
+});
 
 const ENGAGEMENTS = [
   {
@@ -39,6 +43,8 @@ const ENGAGEMENTS = [
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema("Services", "/services")} />
+
       <PageIntro
         index="04"
         label="Services"

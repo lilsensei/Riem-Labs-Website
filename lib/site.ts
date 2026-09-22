@@ -17,8 +17,18 @@ export const site = {
   email: "info@riemlabs.dev",
   /** The one published number: calls, and the same line WhatsApp opens. */
   phone: "+254 182 460 565",
+  /**
+   * The published base address, in the three pieces the contact page joins
+   * back into one line and the Organization schema needs kept apart.
+   *
+   * Here rather than in the contact page so the address a crawler is told
+   * and the address a visitor reads cannot drift from one another.
+   */
+  street: "Rehema House",
   city: "Nairobi",
   country: "Kenya",
+  /** ISO 3166-1 alpha-2, which is what schema.org's addressCountry expects. */
+  countryCode: "KE",
   timeZone: "Africa/Nairobi",
   timeZoneLabel: "EAT",
   founded: 2026,

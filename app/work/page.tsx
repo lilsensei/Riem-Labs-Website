@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CTABanner from "@/components/CTABanner";
 import GlyphPanel from "@/components/GlyphPanel";
+import JsonLd from "@/components/JsonLd";
 import PageIntro from "@/components/PageIntro";
 import RevealSection from "@/components/RevealSection";
 import SectionHeader from "@/components/SectionHeader";
@@ -8,12 +9,15 @@ import WorkGallery from "@/components/WorkGallery";
 import { Fade } from "@/components/RevealText";
 import { CHOREO_OFFSETS, choreographyPool } from "@/lib/glyphChoreographies";
 import { industries, projects } from "@/lib/projects";
+import { breadcrumbSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Work",
+export const metadata: Metadata = pageMetadata({
+  path: "/work",
+  title: "Selected Work",
   description:
-    "Selected work from Riem Labs across websites, digital products and business systems, presented according to what each project actually is.",
-};
+    "Explore selected Riem Labs work across websites, digital products and business systems, presented with clear project context and status.",
+});
 
 export default function WorkPage() {
   const years = projects.map((p) => Number(p.year));
@@ -23,6 +27,8 @@ export default function WorkPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbSchema("Work", "/work")} />
+
       <PageIntro
         index="03"
         label="Work"

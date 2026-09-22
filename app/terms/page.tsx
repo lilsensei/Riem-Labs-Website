@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import LegalAccordion, { type LegalSection } from "@/components/LegalAccordion";
+import JsonLd from "@/components/JsonLd";
 import PageIntro from "@/components/PageIntro";
 import RevealSection from "@/components/RevealSection";
+import { breadcrumbSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Terms",
+export const metadata: Metadata = pageMetadata({
+  path: "/terms",
+  title: "Terms of Service",
   description: `The commercial terms that apply to ${site.name} engagements.`,
-};
+});
 
 const LAST_UPDATED = "September 2026";
 
@@ -221,6 +225,8 @@ const SECTIONS: LegalSection[] = [
 export default function TermsPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema("Terms of Service", "/terms")} />
+
       <PageIntro
         index="07"
         label="Terms"

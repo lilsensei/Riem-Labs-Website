@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import AvailabilityLine from "@/components/AvailabilityLine";
 import ContactForm from "@/components/ContactForm";
+import JsonLd from "@/components/JsonLd";
 import LiveClock from "@/components/LiveClock";
 import PageIntro from "@/components/PageIntro";
 import RevealSection from "@/components/RevealSection";
 import { Fade } from "@/components/RevealText";
+import { breadcrumbSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 import { site, socials, WHATSAPP_ENQUIRY, whatsappHref } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/contact",
   title: "Contact",
   description:
-    "Tell Riem Labs what you're trying to solve. You do not need a finished brief to start the conversation.",
-};
+    "Tell Riem Labs what your business is trying to solve, improve or build and start a project conversation.",
+});
 
 /** GitHub is a working tool, not a public channel — the footer omits it too. */
 const PUBLIC_SOCIALS = socials.filter((s) => s.icon !== "github");
@@ -21,13 +25,19 @@ const PHONE_HREF = `tel:${site.phone.replace(/\s/g, "")}`;
 
 /** The Nairobi base, as a map link rather than an embed. The studio works
  *  from this address; it does not own or occupy the whole building, which
- *  is why the label is "Nairobi base" rather than "Our offices". */
-const BASE_ADDRESS = "Rehema House, Nairobi, Kenya";
+ *  is why the label is "Nairobi base" rather than "Our offices".
+ *
+ *  Composed from the site constants rather than written out again, so the
+ *  line shown here and the PostalAddress in the Organization schema are the
+ *  same address by construction. */
+const BASE_ADDRESS = `${site.street}, ${site.city}, ${site.country}`;
 const BASE_MAP_URL = "https://maps.app.goo.gl/P8qoGLMW8YAvuoL38";
 
 export default function ContactPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema("Contact", "/contact")} />
+
       {/* No headlineClassName/headlineAside override any more — this now
           uses PageIntro's plain default layout, the exact same single-
           column, full-width text-display treatment About/Work/Services

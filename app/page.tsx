@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import AboutSection from "@/components/AboutSection";
 import BracketLink from "@/components/BracketLink";
 import CTABanner from "@/components/CTABanner";
 import HeroSpotlight from "@/components/HeroSpotlight";
+import JsonLd from "@/components/JsonLd";
 import LogoMarquee from "@/components/LogoMarquee";
 import ProjectCard from "@/components/ProjectCard";
 import SectionWipe from "@/components/SectionWipe";
@@ -12,11 +14,31 @@ import SectionHeader from "@/components/SectionHeader";
 import { Fade } from "@/components/RevealText";
 import { CHOREO_OFFSETS, choreographyPool } from "@/lib/glyphChoreographies";
 import { featuredProjects } from "@/lib/projects";
+import { organizationSchema, webSiteSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 import { services } from "@/lib/services";
+
+/**
+ * The homepage title names the studio itself, so it opts out of the layout's
+ * `%s — Riem Labs` template rather than ending up saying it twice.
+ */
+export const metadata: Metadata = pageMetadata({
+  path: "/",
+  title: "Riem Labs — Websites, Digital Products & Business Systems",
+  description:
+    "Riem Labs is a Nairobi-based digital practice designing and building websites, digital products and business systems around real operational needs.",
+  absoluteTitle: true,
+});
 
 export default function HomePage() {
   return (
     <>
+      {/* The studio and the site as entities, declared once, here — this is
+          the page both @ids are named after and the page every other page's
+          breadcrumb points back to. */}
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={webSiteSchema} />
+
       {/* ── Hero: dual-layer cursor spotlight ──────────────────────── */}
       <HeroSpotlight />
 

@@ -2,23 +2,29 @@ import type { Metadata } from "next";
 import CTABanner from "@/components/CTABanner";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
 import GlyphPanel from "@/components/GlyphPanel";
+import JsonLd from "@/components/JsonLd";
 import PageIntro from "@/components/PageIntro";
 import RevealSection from "@/components/RevealSection";
 import SectionHeader from "@/components/SectionHeader";
 import { Fade, RevealLines } from "@/components/RevealText";
 import { CHOREO_OFFSETS, choreographyPool } from "@/lib/glyphChoreographies";
+import { breadcrumbSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
 import { aboutProcess, principles } from "@/lib/services";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/about",
   title: "Studio",
   description:
-    "Riem Labs is a Nairobi-based digital practice working across websites, digital products and business systems.",
-};
+    "Learn how Riem Labs approaches digital presence, software and business systems by starting with how the business actually works.",
+});
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema("Studio", "/about")} />
+
       <PageIntro
         index="02"
         label="Studio"

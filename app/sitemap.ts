@@ -16,10 +16,18 @@ import { site } from "@/lib/site";
 
 /** Every page a visitor can land on, in the order the navigation presents them. */
 const ROUTES = [
-  // Trailing slash on the root only: `https://riemlabs.dev/` is the
-  // conventional canonical form for a homepage, and the others compose
-  // straight onto the origin.
-  "/",
+  /**
+   * The root is the bare origin, with no trailing slash.
+   *
+   * That is the form Next's metadata resolver emits for the homepage's
+   * canonical — under the default `trailingSlash: false` it normalises one
+   * away and there is no per-page override — so listing it here as
+   * `https://riemlabs.dev/` would have the sitemap and the canonical writing
+   * the same URL two ways. They are the same URL either way (RFC 3986: an
+   * empty path is equivalent to "/"), but an audit reading both should not
+   * have to know that.
+   */
+  "",
   "/about",
   "/work",
   "/services",
