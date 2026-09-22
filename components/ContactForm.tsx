@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import BracketLink from "@/components/BracketLink";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
-import { site } from "@/lib/site";
 
 /**
  * Hash that means "you arrived here to brief something" — currently sent by
@@ -280,12 +279,6 @@ export default function ContactForm() {
           <BracketLink href="/work" variant="framed">
             Browse the work
           </BracketLink>
-          <a
-            href={`mailto:${site.email}`}
-            className="meta text-ink/45 transition-colors duration-400 ease-expo hover:text-accent"
-          >
-            {site.email}
-          </a>
         </div>
       </div>
     );
@@ -303,19 +296,6 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-20">
-      {/*
-        Honeypot. Not `type="hidden"` — plenty of bots skip those — but a real
-        field moved out of reach: off-screen, no tab stop, hidden from assistive
-        tech and with autofill switched off so a password manager never puts
-        anything in it. Anyone who can see this is not using a browser.
-      */}
-      <div aria-hidden="true" className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
-        <label>
-          Leave this field empty
-          <input type="text" name="website" tabIndex={-1} autoComplete="off" />
-        </label>
-      </div>
-
       {/* 01 — Who */}
       <fieldset
         id="brief"
@@ -486,6 +466,24 @@ export default function ContactForm() {
         </div>
 
         <p className="meta max-w-xs text-ink/35">We reply within 24 hours.</p>
+      </div>
+
+      {/*
+        Honeypot. Last in the form, not first: it is absolutely positioned
+        but still a sibling, so as the first child `space-y-20` handed the
+        80px gap to the opening fieldset instead and pushed the whole
+        sequence down, leaving `01 / About you` sitting below `Direct`
+        beside it. Out of flow, the margin it now takes changes nothing.
+        Not `type="hidden"` — plenty of bots skip those — but a real
+        field moved out of reach: off-screen, no tab stop, hidden from assistive
+        tech and with autofill switched off so a password manager never puts
+        anything in it. Anyone who can see this is not using a browser.
+      */}
+      <div aria-hidden="true" className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+        <label>
+          Leave this field empty
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+        </label>
       </div>
     </form>
   );

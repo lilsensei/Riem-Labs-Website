@@ -38,7 +38,11 @@ export default function WorkPage() {
       />
 
       <RevealSection className="bg-canvas">
-        <div className="shell pb-section">
+        {/* `py-section`, matching About and Services. With `pb-section` alone
+            the Index rule began exactly where the masthead's padding ended, so
+            the label read as part of the hero rather than the start of the
+            next section. */}
+        <div className="shell py-section">
           <SectionHeader index="01" label="Index" className="mb-10" />
           <WorkGallery />
         </div>

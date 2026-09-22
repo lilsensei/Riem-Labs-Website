@@ -53,9 +53,14 @@ export default function ContactPage() {
 
             {/* Direct contact metadata */}
             <aside className="lg:col-span-4 lg:col-start-9">
-              <div className="border-t border-hairline pt-8 lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
+              {/* No `pt-8` here, deliberately. A <legend> is laid out at its
+                  fieldset's top edge and ignores the fieldset's padding-top, so
+                  `01 / About you` sits flush under the form's rule while this
+                  label was being pushed 33px below its own — which is why the
+                  two columns started at different heights. Flush matches. */}
+              <div className="border-t border-hairline lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
                 <p className="meta flex items-baseline gap-2">
-                  <span className="tnum text-accent">06</span>
+                  <span className="tnum text-accent">05</span>
                   <span className="text-ink/25">/</span>
                   <span>Direct</span>
                 </p>

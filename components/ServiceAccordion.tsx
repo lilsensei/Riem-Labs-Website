@@ -185,26 +185,49 @@ export default function ServiceAccordion({ services }: { services: Service[] }) 
   // row on arrival is a deep link naming that row, handled below.
   const [openIndex, setOpenIndex] = useState<string | null>(null);
 
-  // Deep-link support: /services#<slug> (e.g. from a home-page Services
-  // card) opens that specific accordion row and scrolls it into view,
-  // instead of just landing at the top of the page.
+  /**
+   * Deep-link support: /services#<slug> opens that row and scrolls to it.
+   *
+   * On mount *and* on every subsequent hash change, which is the part that was
+   * missing. Arriving from a home-page card works either way, because that is
+   * a fresh document — but once the visitor is on /services, moving between
+   * hashes is a same-document navigation and the component never remounts.
+   * Back and forward are the same story. With a mount-only effect the row
+   * opened by the first hash simply stayed open and every later hash did
+   * nothing, so /services#data-science-analytics could sit there showing
+   * AI & Intelligent Workflows.
+   *
+   * `hashchange` covers in-page moves; `popstate` covers back/forward, which
+   * does not always fire `hashchange` when the path changes too. Applying the
+   * same function to both keeps one definition of what a hash means.
+   *
+   * A hash that matches nothing is left alone rather than closing whatever is
+   * open — an unknown fragment should not undo the visitor's own state.
+   */
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const target = services.find((s) => serviceSlug(s.title) === hash);
-    if (!target) return;
+    const applyHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+      const target = services.find((s) => serviceSlug(s.title) === hash);
+      if (!target) return;
 
-    setOpenIndex(target.index);
-    // Wait a frame so the row (and its expanding panel) has a chance to
-    // lay out before scrolling — an immediate scrollIntoView can measure
-    // against the pre-expand height and land short.
-    requestAnimationFrame(() => {
-      document.getElementById(`service-${hash}`)?.scrollIntoView({ block: "start" });
-    });
-    // Deliberately run once on mount only — this is for landing on the
-    // page via a link, not for reacting to in-page hash changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      setOpenIndex(target.index);
+      // Wait a frame so the row (and its expanding panel) has a chance to
+      // lay out before scrolling — an immediate scrollIntoView can measure
+      // against the pre-expand height and land short.
+      requestAnimationFrame(() => {
+        document.getElementById(`service-${hash}`)?.scrollIntoView({ block: "start" });
+      });
+    };
+
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    window.addEventListener("popstate", applyHash);
+    return () => {
+      window.removeEventListener("hashchange", applyHash);
+      window.removeEventListener("popstate", applyHash);
+    };
+  }, [services]);
 
   return (
     <div className="border-t border-hairline">
