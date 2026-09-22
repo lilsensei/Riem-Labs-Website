@@ -71,8 +71,13 @@ const SECTIONS: LegalSection[] = [
     brief:
       "Enquiry details are used only to understand and respond to the request you submit.",
     body: [
-      "Information submitted through the contact form is intended to help Riem Labs understand the enquiry and respond appropriately.",
-      "This website is currently a front-end interface and the contact form is not yet connected to a system that delivers or stores submissions. Until that connection is in place, details entered into the form are not transmitted to Riem Labs, recorded in a database or passed to any other service. If you need to reach us in the meantime, please use the email address or phone number on the Contact page.",
+      "Information submitted through the contact form is transmitted to Riem Labs so that the enquiry can be reviewed and answered. Depending on what you choose to complete, it may include your name, email address, company, the scope of the work, the timeline you have in mind and the details of the brief you write.",
+      <span key="delivery">
+        Submissions are currently delivered to Riem Labs by email, to <MailTo />. Riem Labs
+        does not at present operate a separate customer database for enquiries submitted
+        through the form.
+      </span>,
+      "The information is used to review, respond to and manage your enquiry. It is not used for another purpose unless that use is agreed with you.",
     ],
   },
   {
