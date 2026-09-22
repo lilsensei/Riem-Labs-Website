@@ -28,14 +28,20 @@ export const metadata: Metadata = {
   // This was pointing at riemlabs.com, which would have had every canonical and
   // Open Graph URL naming a different host from the one the sitemap lists.
   metadataBase: new URL(site.url),
+  /**
+   * The fallback title and description, which every real page overrides.
+   * In practice only the not-found route reaches them — and it was still
+   * introducing the studio with the superseded positioning while all eight
+   * public pages used the current one.
+   */
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    default: `${site.name} — ${site.offering}`,
     template: `%s — ${site.name}`,
   },
-  description: site.description,
+  description: site.positioning,
   openGraph: {
-    title: `${site.name} — ${site.tagline}`,
-    description: site.description,
+    title: `${site.name} — ${site.offering}`,
+    description: site.positioning,
     type: "website",
     locale: "en_GB",
     siteName: site.name,

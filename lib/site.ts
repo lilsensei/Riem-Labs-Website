@@ -1,20 +1,16 @@
 export const site = {
   name: "Riem Labs",
   shortName: "Riem",
-  tagline: "Design & web systems studio",
-  description:
-    "Riem Labs is an independent design studio building digital products, interfaces, and web systems — shaped from first idea to working form.",
   /**
-   * The current positioning, in the two forms search and social ask for.
+   * How the studio describes itself, in the two forms search and social ask
+   * for: a short phrase that completes "Riem Labs — …", and a full sentence.
    *
-   * These were written out by hand in the homepage metadata while the
-   * Organization schema and the social card's alt text still carried the
-   * older `tagline`/`description` wording — the same studio described two
-   * ways depending on where a crawler looked. Both now read from here.
-   *
-   * `tagline` and `description` above are kept as they are: they still serve
-   * the root layout's fallback title and description, and the tagline is set
-   * into the social card artwork itself.
+   * Everything that introduces the studio reads from here — page titles, meta
+   * descriptions, the Organization schema, the social card and its alt text —
+   * so there is one wording to change and no second copy to forget. The pair
+   * that used to sit above these, `tagline` and `description`, said "design &
+   * web systems studio" and outlived the positioning they described; they are
+   * gone rather than left around to be picked up by mistake.
    */
   offering: "Websites, Digital Products & Business Systems",
   positioning:

@@ -7,6 +7,7 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run typecheck
+npm run indexnow # ping IndexNow after a production content change
 ```
 
 ## Routes
@@ -18,8 +19,11 @@ npm run typecheck
 | `/work`     | Filterable project index with in-page preview modal                             |
 | `/services` | Expandable service accordions, engagement models, process                       |
 | `/contact`  | Inquiry form (budget selector, scope multi-select), direct metadata, FAQ        |
+| `/terms` `/privacy` `/refund` | Legal pages, as expanding sections                           |
 
-`POST /api/inquiry` validates and shapes contact submissions. Delivery is not wired — add your transport at the marked line in [route.ts](app/api/inquiry/route.ts).
+`POST /api/inquiry` validates a submission and sends it on as mail. It rate-limits by client, drops anything that trips the honeypot, and answers a bot exactly as it answers a person. Credentials come from the environment — see [.env.example](.env.example).
+
+Search and social metadata is built in [lib/seo.ts](lib/seo.ts), structured data in [lib/schema.ts](lib/schema.ts), and [sitemap.ts](app/sitemap.ts) / [robots.ts](app/robots.ts) serve the crawler files. The canonical origin lives once, in [`site.url`](lib/site.ts).
 
 ## Design tokens
 
@@ -81,12 +85,12 @@ Pre-hidden states are scoped to a `.js` class set on `<html>` before first paint
 
 ## Components
 
-`Header` · `Footer` · `HeroSpotlight` · `HeroContent` · `SectionHeader` · `ProjectCard` · `ProjectVisual` · `ProjectPreview` · `WorkGallery` · `ServiceAccordion` · `ContactForm` · `BracketLink` · `LiveClock` · `Marquee` · `PageIntro` · `CTABanner` · `SmoothScrollProvider` · `RevealSection` / `RevealText`
+`Header` · `Footer` · `HeroSpotlight` · `HeroContent` · `SectionHeader` · `ProjectCard` · `ProjectPreview` · `WorkGallery` · `ServiceAccordion` · `ContactForm` · `BracketLink` · `LiveClock` · `LogoMarquee` · `PageIntro` · `CTABanner` · `SmoothScrollProvider` · `RevealSection` / `RevealText`
 
 Content lives in [lib/](lib/) — [`projects.ts`](lib/projects.ts), [`services.ts`](lib/services.ts), [`site.ts`](lib/site.ts). Add a project or service there and every page that lists it updates.
 
 ## Notes
 
 - **Lenis package name.** The brief specified `@studio-freight/lenis`; that name is deprecated and frozen at 1.0.42. This uses `lenis`, the same library under its current name, so it keeps receiving fixes. The import is `import Lenis from "lenis"`.
-- **Imagery.** Project covers are generated SVG plates ([ProjectVisual](components/ProjectVisual.tsx)) built from the same primitives as the layout — no stock photography, nothing to license. Swap in real imagery per project by replacing that component's output.
+- **Imagery.** Project covers are screenshots of the delivered sites, in [public/work/](public/work/) and referenced by `image` in [projects.ts](lib/projects.ts). No stock photography, nothing to license.
 - **Fonts.** PP Neue Montreal is commercially licensed and not bundled. Inter is loaded via `next/font` and PP Neue Montreal sits ahead of it in the CSS stack, so dropping in the licensed files is a font-face declaration away.

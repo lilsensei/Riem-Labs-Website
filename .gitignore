@@ -15,3 +15,13 @@ next-env.d.ts
 
 # Claude Code local runtime state (not project content)
 .claude/
+
+# Editor and OS clutter. .DS_Store is covered above; these are the Windows and
+# JetBrains/VS Code equivalents, which this project is actually developed on.
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Any stray log, not just the npm and yarn ones named above.
+*.log
