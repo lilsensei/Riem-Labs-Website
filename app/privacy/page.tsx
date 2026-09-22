@@ -21,6 +21,20 @@ const MailTo = () => (
   </a>
 );
 
+/** Google's own description of what it does with analytics data — theirs to
+ *  state, not ours to paraphrase. */
+const GooglePrivacy = () => (
+  <a
+    href="https://policies.google.com/privacy"
+    target="_blank"
+    rel="noreferrer noopener"
+    className="link-wipe text-ink"
+  >
+    Google’s privacy policy
+    <span className="sr-only"> (opens in a new tab)</span>
+  </a>
+);
+
 const SECTIONS: LegalSection[] = [
   {
     index: "01",
@@ -65,10 +79,16 @@ const SECTIONS: LegalSection[] = [
     index: "05",
     title: "Cookies and analytics",
     brief:
-      "Any analytics or cookies used on the site should be limited to what is necessary or deliberately enabled.",
+      "The site uses Google Analytics to understand how it is used, which may involve cookies or similar measurement technologies.",
     body: [
-      "This website does not currently run optional analytics, advertising or tracking technologies, and it does not set cookies for those purposes.",
-      "Essential browser or hosting technologies may operate where required to deliver the website securely and reliably. If optional analytics are introduced later, this page will be updated to describe them.",
+      "Riem Labs uses Google Analytics 4 to understand how this website is used, including which pages are viewed, how visitors arrive at the site and how the site is interacted with in general terms. Google Analytics may use cookies or similar technologies to carry out that measurement.",
+      "Personal information submitted through the project inquiry form — including your name, email address and the details of your brief — is not intentionally sent to Google Analytics. A completed enquiry is recorded only as the fact that an enquiry was submitted, without the information you entered into the form.",
+      <span key="google">
+        Analytics data is used to understand how the website performs and to improve the
+        experience it offers. Google processes the information it collects under its own terms,
+        which are described in <GooglePrivacy />.
+      </span>,
+      "Essential browser or hosting technologies may also operate where required to deliver the website securely and reliably.",
     ],
   },
   {
