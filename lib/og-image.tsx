@@ -7,9 +7,11 @@ import { site } from "./site";
  * The social card, shared by the Open Graph and Twitter image routes.
  *
  * It is the site's own furniture and nothing else: canvas white, the brand
- * mark, one hairline rule and the existing tagline. No claim appears here
- * that is not already on the site, and the brand itself is untouched — the
- * wordmark is the real logo file, not a re-set approximation.
+ * mark, one hairline rule and the studio's offering — the same line the card's
+ * alt text carries, so what the image says and what it is described as saying
+ * are one string. No claim appears here that is not already on the site, and
+ * the brand itself is untouched — the wordmark is the real logo file, not a
+ * re-set approximation.
  */
 
 export const size = { width: 1200, height: 630 };
@@ -68,7 +70,7 @@ export function renderOgImage() {
                 color: STONE,
               }}
             >
-              {site.tagline}
+              {site.offering}
             </div>
             {/* The origin, in the accent the site reserves for signal. */}
             <div
