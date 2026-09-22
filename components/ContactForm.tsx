@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import BracketLink from "@/components/BracketLink";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
+import { trackGenerateLead } from "@/lib/analytics";
 
 /**
  * Hash that means "you arrived here to brief something" — currently sent by
@@ -72,6 +73,12 @@ export default function ContactForm() {
    * synchronously, so the second click sees it immediately.
    */
   const sending = useRef(false);
+  /**
+   * Whether the lead has already been reported to analytics. The success panel
+   * replaces the form, so a second success is not reachable today — this keeps
+   * "once per inquiry" a property of the code rather than of the layout.
+   */
+  const leadReported = useRef(false);
   const successRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -245,6 +252,24 @@ export default function ContactForm() {
         );
         setStatus("error");
         return;
+      }
+
+      /**
+       * The server has accepted the inquiry, so this is a real lead — record
+       * it. Past every earlier return: a validation failure, a rate limit, a
+       * non-OK response and a body without `success` have all already left
+       * this function, so the event cannot stand for an inquiry that did not
+       * arrive.
+       *
+       * The honeypot is the one success the server reports that is not one.
+       * It answers a bot exactly as it answers a person, deliberately, so the
+       * response cannot tell them apart — but this side can, because a real
+       * visitor never fills a field they cannot see. Checking it here changes
+       * nothing the bot observes and keeps the count honest.
+       */
+      if (!payload.website.trim() && !leadReported.current) {
+        leadReported.current = true;
+        trackGenerateLead();
       }
 
       // Clear the form as well as switching view: the success panel replaces
