@@ -53,23 +53,33 @@ export default function ContactPage() {
 
             {/* Direct contact metadata */}
             <aside className="lg:col-span-4 lg:col-start-9">
-              {/* No `pt-8` here, deliberately. A <legend> is laid out at its
-                  fieldset's top edge and ignores the fieldset's padding-top, so
-                  `01 / About you` sits flush under the form's rule while this
-                  label was being pushed 33px below its own — which is why the
-                  two columns started at different heights. Flush matches. */}
-              <div className="border-t border-hairline lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
-                {/* `pb-6` and no margin below, which is exactly what the
-                    form's <legend> carries, with `mt-8` on the list below to
-                    stand in for the `pt-8` a fieldset applies to everything
-                    after its legend. Together that is the 56px the numbered
-                    sections put between heading and content; this block had
-                    40px from the list's own margin and nothing else, so it
-                    read as a different kind of thing beside them. */}
-                <p className="meta flex items-baseline gap-2 pb-6">
-                  <span className="tnum text-accent">05</span>
-                  <span className="text-ink/25">/</span>
-                  <span>Direct</span>
+              {/* No border-t here. The rule belongs to the heading below, the
+                  way it does in the form — see the comment on that heading. */}
+              <div className="lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
+                {/* The same header the form's numbered sections use, built by
+                    hand because theirs comes from the browser.
+
+                    `01 / About you` is a <legend> inside a bordered <fieldset>,
+                    so Chrome paints the rule through the middle of the legend's
+                    box and simply omits it where the legend sits: the label
+                    lands *on* the rule's row and the rule carries on to its
+                    right. This block had a plain full-width border-t instead —
+                    matching spacing but reading as a different pattern, a line
+                    above a label rather than a label interrupting a line.
+
+                    So: the <p> draws the rule as a ::before centred on its own
+                    padded box, which is where a fieldset paints its border, and
+                    the label wraps in an opaque span tall enough to cover that
+                    row — the same interruption, by the same geometry, with no
+                    measured-off offsets to drift. `pb-6` moves onto that span
+                    so the heading keeps the exact height it had, leaving the
+                    56px to the list below unchanged. */}
+                <p className="meta relative flex items-baseline before:absolute before:inset-x-0 before:inset-y-0 before:my-auto before:h-px before:bg-hairline before:content-['']">
+                  <span className="relative flex items-baseline gap-2 bg-canvas pb-6">
+                    <span className="tnum text-accent">05</span>
+                    <span className="text-ink/25">/</span>
+                    <span>Direct</span>
+                  </span>
                 </p>
 
                 <dl className="mt-8 space-y-8">
