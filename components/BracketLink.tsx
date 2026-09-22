@@ -79,11 +79,12 @@ export default function BracketLink({
   const dark = tone === "dark";
   const reveal = tone === "reveal";
   const boxed = variant === "boxed";
-  // `solid` always carries `cta-corners` too (see `base` below) — the
-  // literal `[`/`]` spans were stacking a second bracket treatment on top
-  // of that decorative corner accent. `boxed` never had them; `solid`
-  // shouldn't either, for the same reason.
-  const noLiteralBrackets = boxed || variant === "solid";
+  // Every bordered variant drops the literal `[`/`]` spans. The box already
+  // frames the label, so brackets inside it are a second frame around the
+  // first — and `solid` and `framed` both carry a decorative corner accent on
+  // top of that. Only the unbordered `inline` CTA keeps its brackets, where
+  // they are the whole treatment.
+  const noLiteralBrackets = boxed || variant === "solid" || variant === "framed";
 
   /**
    * Writes the offsets the .magnetic rules in globals.css read from.

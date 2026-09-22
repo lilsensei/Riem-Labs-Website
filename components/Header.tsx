@@ -70,6 +70,8 @@ export default function Header() {
   /** The route the lock was taken on, so the unlock can tell a dismissal
    *  apart from a navigation. */
   const scrollLockPath = useRef<string | null>(null);
+  /** Set when the drawer is closing because the current route was re-tapped. */
+  const reentering = useRef(false);
 
   /**
    * The only way out of the open state.
@@ -87,6 +89,44 @@ export default function Header() {
   }, []);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  /**
+   * Tapping the route you are already on.
+   *
+   * Next treats that as a no-op — same pathname, no navigation — so the effect
+   * above never fires, the drawer stays open over the page and the tap reads as
+   * broken. It is a reasonable thing to want, though: it means "take me back to
+   * the start of this page". So handle it here rather than leaving it dead.
+   *
+   * A full reload would also work and is worse: it throws away the client
+   * router, refetches the document and flashes the page. Closing the drawer and
+   * returning to the top gives the same result at no cost, and ScrollTrigger is
+   * refreshed afterwards so every section re-measures against the new position
+   * and the reveals are armed exactly as they are on a fresh arrival.
+   *
+   * Cross-route links are untouched — this only intercepts when the href is
+   * already the current path.
+   */
+  const onMenuLinkClick = useCallback(
+    (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (href !== pathname) return;
+      // Let a modified click do the browser's own thing (new tab, download…).
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      event.preventDefault();
+      // The unlock below restores the position the drawer was opened at, which
+      // is the right behaviour for a dismissal and the wrong one here — it
+      // would put the visitor straight back where they were. This flag tells it
+      // to go to the top instead, and it owns the scroll so the two cannot
+      // fight: doing it here would be overwritten a commit later.
+      reentering.current = true;
+      close();
+      // After the drawer's own close transition, so the refresh measures the
+      // page as the visitor will actually see it.
+      window.setTimeout(() => ScrollTrigger.refresh(), 520);
+    },
+    [pathname, close],
+  );
 
   /**
    * Freeze the page and flag the open state on <html>.
@@ -129,6 +169,8 @@ export default function Header() {
       // change the body lock is simply released and SmoothScrollProvider's
       // own route effect takes the page to the top.
       const navigated = scrollLockPath.current !== null && scrollLockPath.current !== pathname;
+      const reenter = reentering.current;
+      reentering.current = false;
       scrollLockPath.current = null;
       document.body.style.position = "";
       document.body.style.top = "";
@@ -139,7 +181,10 @@ export default function Header() {
       // scroll actually is via its own scroll listener, the same path
       // ordinary scrolling takes.
       start();
-      if (!navigated) window.scrollTo(0, y);
+      // Re-tapping the current route means "start this page again", so it goes
+      // to the top rather than back to where the drawer was opened.
+      if (reenter) window.scrollTo(0, 0);
+      else if (!navigated) window.scrollTo(0, y);
       return;
     }
 
@@ -505,6 +550,7 @@ export default function Header() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={onMenuLinkClick(item.href)}
                     tabIndex={open ? 0 : -1}
                     data-current={isActive(item.href) ? "true" : "false"}
                     className="menu-link group flex items-baseline gap-4 border-b border-mist/15 py-5 sm:py-[2.34rem]"

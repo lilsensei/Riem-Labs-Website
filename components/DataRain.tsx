@@ -272,10 +272,34 @@ export default function DataRain({
       render();
     };
 
+    /**
+     * Only paint while there is something to see.
+     *
+     * Three of these run at once — the hero's ambient field, the bright copy
+     * inside the reveal layer, and the footer's — and each was repainting at
+     * 30fps for the whole visit, including while its canvas sat entirely off
+     * screen. On a desktop that is invisible; on a retina tablet it is three
+     * full-width canvases being rasterised at 2x forever, which is steady work
+     * competing with the scroll for exactly the frames the wipe needs.
+     *
+     * Nothing about the effect changes when it is on screen. The rain simply
+     * stops while nobody can see it, and picks up again where it left off —
+     * the stream positions live outside this loop, so there is no restart.
+     */
+    let onScreen = true;
+    let pageVisible = !document.hidden;
+
+    const shouldRun = () => onScreen && pageVisible && !reduced.matches;
+
     const run = () => {
       window.cancelAnimationFrame(frame);
-      if (reduced.matches) render();
-      else frame = window.requestAnimationFrame(draw);
+      frame = 0;
+      // Reduced motion gets one static frame rather than a loop.
+      if (reduced.matches) {
+        render();
+        return;
+      }
+      if (shouldRun()) frame = window.requestAnimationFrame(draw);
     };
 
     layout();
@@ -285,12 +309,34 @@ export default function DataRain({
       layout();
       run();
     };
+
+    const onVisibility = () => {
+      pageVisible = !document.hidden;
+      run();
+    };
+
+    // `rootMargin` starts it a little before it scrolls in, so it is never
+    // caught mid-catch-up at the moment it becomes visible.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const next = entries.some((e) => e.isIntersecting);
+        if (next === onScreen) return;
+        onScreen = next;
+        run();
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(host);
+
     window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibility);
     reduced.addEventListener("change", run);
 
     return () => {
       window.cancelAnimationFrame(frame);
+      observer.disconnect();
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibility);
       reduced.removeEventListener("change", run);
     };
   }, [tone]);

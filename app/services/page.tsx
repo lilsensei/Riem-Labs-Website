@@ -55,7 +55,12 @@ export default function ServicesPage() {
 
       {/* ── 03.1 / Offerings ───────────────────────────────────────── */}
       <RevealSection className="bg-canvas">
-        <div className="shell pb-section">
+        {/* `py-section`, the same token About's first section uses, rather than
+            the `pb-section` this had. With no top padding the Offerings header
+            began exactly where the masthead's own padding ended — 0px between
+            them at every width — so the section read as part of the hero
+            instead of after it. */}
+        <div className="shell py-section">
           <SectionHeader
             index="01"
             label="Offerings"

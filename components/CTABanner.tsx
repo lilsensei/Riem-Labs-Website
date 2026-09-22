@@ -47,15 +47,27 @@ export default function CTABanner({
           <p className="meta text-canvas/40">{site.city.toUpperCase()} — WORLDWIDE</p>
         </div>
 
-        <div className="mt-16 grid items-end gap-x-gutter gap-y-12 md:grid-cols-12">
+        {/* The 9/3 split waits for `xl`. From `md` it gave the supporting note
+            three columns of a tablet — 149px at 768, holding 198 characters at
+            roughly twenty per line — and squeezed the button until its label
+            wrapped, 176x74 against desktop's 254x54. Below `xl` the headline
+            takes the full width and the note and button sit beneath it, which
+            keeps the same order and the same right-hand axis while giving both
+            a readable measure. */}
+        <div className="mt-16 grid items-end gap-x-gutter gap-y-12 xl:grid-cols-12">
           <RevealLines
             as="h2"
             lines={lines}
-            className={`${HEADLINE_CLASS} text-balance font-medium md:col-span-9`}
+            className={`${HEADLINE_CLASS} text-balance font-medium xl:col-span-9`}
           />
 
-          <div className="flex flex-col justify-end gap-8 md:col-span-3">
-            <Fade as="p" className="text-sm leading-relaxed text-canvas/55">
+          <div className="flex flex-col justify-end gap-8 xl:col-span-3">
+            {/* Capped below `xl`, where the note now spans the full width: 198
+                characters across 1085px is one long ribbon of a line, which is
+                no more readable than the 149px column it replaced. `max-w-md`
+                holds it near a 60-character measure. At `xl` the three-column
+                cell is already the limit, so the cap comes off. */}
+            <Fade as="p" className="max-w-md text-sm leading-relaxed text-canvas/55 xl:max-w-none">
               {note}
             </Fade>
 

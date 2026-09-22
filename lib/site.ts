@@ -20,6 +20,29 @@ export const site = {
   availability: "Available for select projects",
 } as const;
 
+/**
+ * The current calendar quarter, in the studio's own timezone.
+ *
+ * Nairobi, not the visitor's clock: the availability line is a statement about
+ * when *we* are free, so a visitor in Auckland on 1 January should still see
+ * the quarter Riem is actually in. Derived from the date every time it is
+ * asked for — there is no stored value to go stale and nothing scheduled to
+ * update it, so it rolls over on its own at each quarter boundary.
+ */
+export function currentQuarter(now: Date = new Date()) {
+  // en-CA gives YYYY-MM-DD, which slices without parsing ambiguity.
+  const [year, month] = new Intl.DateTimeFormat("en-CA", {
+    timeZone: site.timeZone,
+    year: "numeric",
+    month: "2-digit",
+  })
+    .format(now)
+    .split("-")
+    .map(Number);
+
+  return `Q${Math.floor((month - 1) / 3) + 1} ${year}`;
+}
+
 export type NavItem = {
   label: string;
   href: string;

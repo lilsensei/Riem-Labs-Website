@@ -213,35 +213,12 @@ export default function SectionWipe({
 
         const pauseBand = () => window.dispatchEvent(new CustomEvent("site:reveal-pause"));
 
-        const captureBand = () => {
-          const marker = document.querySelector<HTMLElement>("[data-reveal-band-marker]");
-          const viewport = layoutWidth();
-          const rect = marker?.getBoundingClientRect();
-
-          if (rect && rect.width > 0) {
-            startWidth = rect.width;
-            startLeft = rect.left;
-          } else {
-            // Band idle (zero width) — start from a seam at its centre.
-            startWidth = 0;
-            startLeft = rect ? rect.left : viewport / 2;
-          }
-
-          hasStart = true;
-          pauseBand();
-        };
-
-        /**
-         * Re-entering from below (scrolling up) must NOT re-measure the band —
-         * it is full-bleed at that moment. Reuse the rect captured on the way
-         * down so the scroll-up exactly reverses it.
-         */
         /**
          * The band's live geometry, straight from HeroSpotlight's own channel.
          *
          * Returns null where there is no pointer band at all — touch, reduced
-         * motion, anything under 64rem — in which case the captured rect stays
-         * the destination and the centre-seam behaviour is unchanged.
+         * motion, anything under 64rem — in which case the marker rect is used
+         * instead and the centre-seam behaviour is unchanged.
          */
         const liveBand = () => {
           const style = getComputedStyle(root);
@@ -250,6 +227,55 @@ export default function SectionWipe({
           if (!Number.isFinite(centre) || !Number.isFinite(width)) return null;
           return { left: centre - width / 2, width: width };
         };
+
+        /**
+         * Freeze the axis the whole transition will run on.
+         *
+         * Read once, here, at the moment scroll takes over — never again per
+         * frame. That is the difference between the band and the field: while
+         * the visitor is resting in the hero the pointer owns the band, but the
+         * instant the transition starts the axis is fixed and scroll owns
+         * everything. Sampling the live channel every frame instead let the
+         * cursor drag the whole expanding field sideways mid-scroll, which is
+         * not an interaction anyone asked for and reads as the page coming
+         * apart. Both directions then run on this one frozen rect, so the
+         * contraction lands exactly where the expansion began.
+         *
+         * The live channel is preferred over the marker's own rect because the
+         * marker is the band *as drawn*, which lags the pointer by the band's
+         * easing; the channel is where HeroSpotlight would put it right now.
+         */
+        const captureBand = () => {
+          const viewport = layoutWidth();
+          const band = liveBand();
+
+          if (band && band.width > 0) {
+            startWidth = band.width;
+            startLeft = band.left;
+          } else {
+            const rect = document
+              .querySelector<HTMLElement>("[data-reveal-band-marker]")
+              ?.getBoundingClientRect();
+            if (rect && rect.width > 0) {
+              startWidth = rect.width;
+              startLeft = rect.left;
+            } else {
+              // Band idle (zero width) — start from a seam at its centre. This
+              // is every time on a touch device, where no band exists at all.
+              startWidth = 0;
+              startLeft = band ? band.left : rect ? rect.left : viewport / 2;
+            }
+          }
+
+          hasStart = true;
+          pauseBand();
+        };
+
+        /**
+         * Re-entering from below (scrolling up) must NOT re-measure the band —
+         * it is full-bleed at that moment. Reuse the rect frozen on the way
+         * down so the scroll-up exactly reverses it.
+         */
 
         const reenterFromBelow = () => {
           if (!hasStart) {
@@ -298,26 +324,10 @@ export default function SectionWipe({
             const p = gsap.utils.clamp(0, 1, self.progress);
             const viewport = layoutWidth();
 
-            /**
-             * Progress 0 is the hover band — the one on screen right now, not
-             * the one that handed over on the way down.
-             *
-             * Going down those are the same thing, so nothing changes there.
-             * Going back up they are only the same if the cursor never moved:
-             * move it while About is on screen and the field used to contract
-             * into the old captured rect and then let HeroSpotlight snap the
-             * band across to the cursor — measured at 695px and 835px of jump.
-             * Reading the live channel makes the end of the contraction and the
-             * start of the band the same geometry, so there is nothing left to
-             * reconnect. Falls back to the captured rect wherever no band
-             * exists (touch, reduced motion), which is the centre seam.
-             */
-            const band = liveBand();
-            const originLeft = band ? band.left : startLeft;
-            const originWidth = band ? band.width : startWidth;
-
-            const left = gsap.utils.interpolate(originLeft, 0, p);
-            const width = gsap.utils.interpolate(originWidth, viewport, p);
+            // The frozen axis, not the live one: see captureBand. Progress is
+            // the only thing that moves this field, in either direction.
+            const left = gsap.utils.interpolate(startLeft, 0, p);
+            const width = gsap.utils.interpolate(startWidth, viewport, p);
             const right = Math.max(0, viewport - (left + width));
 
             setClip(0, right, 0, Math.max(0, left));

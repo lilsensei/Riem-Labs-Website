@@ -121,7 +121,13 @@ export default function AboutPage() {
             description="We keep the process visible from the start, with clear decisions, working previews and direct communication throughout. The exact path depends on the project, but the principle stays the same: understand first, build deliberately, and evolve only where it adds real value."
           />
 
-          <div className="mt-20 grid gap-x-gutter gap-y-14 md:grid-cols-4">
+          {/* 2x2 on a tablet, four across only once there is real room.
+              These four carry full paragraphs, so they need more width per
+              column than ApproachStrip's one-line taglines do: at 1024 four
+              columns gave each body 155px and a 203x449 card — more than twice
+              as tall as it was wide, every line two or three words. 2x2 holds
+              a ~300px measure through the whole iPad range instead. */}
+          <div className="mt-20 grid gap-x-gutter gap-y-14 md:grid-cols-2 xl:grid-cols-4">
             {aboutProcess.map((step, i) => (
               <GlyphPanel
                 key={step.index}

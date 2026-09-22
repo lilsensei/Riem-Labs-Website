@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import BracketLink from "@/components/BracketLink";
+import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 import { site } from "@/lib/site";
 
 /**
@@ -55,6 +56,7 @@ function Legend({
 }
 
 export default function ContactForm() {
+  const { scrollTo } = useSmoothScroll();
   const [scope, setScope] = useState<string[]>([]);
   const [timeline, setTimeline] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -71,6 +73,7 @@ export default function ContactForm() {
    * synchronously, so the second click sees it immediately.
    */
   const sending = useRef(false);
+  const successRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -99,6 +102,32 @@ export default function ContactForm() {
     return () => cancelAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /**
+   * Hold the visitor at the success card.
+   *
+   * The card is far shorter than the form it replaces, so the page loses most
+   * of its height the moment it renders and whatever scroll position the
+   * browser was holding now points somewhere near the footer. Bringing the
+   * card back into view is the whole fix; `center` rather than `start` so it
+   * sits in the middle of the screen instead of under the fixed header, and
+   * smooth so it reads as the page settling rather than a jump.
+   */
+  useEffect(() => {
+    if (status !== "success") return;
+    const el = successRef.current;
+    if (!el) return;
+    const frame = requestAnimationFrame(() => {
+      // Lenis owns the scroll position, so a native smooth scrollIntoView is
+      // simply ignored — it moves the document under Lenis and Lenis puts it
+      // back. Centring the card by hand and handing the number to Lenis is the
+      // only version that actually lands.
+      const rect = el.getBoundingClientRect();
+      const target = rect.top + window.scrollY - Math.max(0, (window.innerHeight - rect.height) / 2);
+      scrollTo(Math.max(0, Math.round(target)));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [status, scrollTo]);
 
   const toggleScope = (item: string) =>
     setScope((current) =>
@@ -238,14 +267,14 @@ export default function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="border border-hairline p-10 lg:p-16">
+      <div ref={successRef} className="border border-hairline p-10 lg:p-16">
         <p className="meta flex items-center gap-2 text-accent">
           <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" />
           Brief received
         </p>
-        <h3 className="mt-8 text-headline font-medium">Thank you — that&apos;s in.</h3>
+        <h3 className="mt-8 text-headline font-medium">Thank you. We&rsquo;ve got your brief.</h3>
         <p className="mt-6 max-w-md text-lede text-ink/55">
-          We read every brief ourselves and reply within 24 hours, even when the answer is no.
+          We read every brief ourselves and reply within 24 hours.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-8">
           <BracketLink href="/work" variant="framed">
