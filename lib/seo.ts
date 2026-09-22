@@ -29,7 +29,7 @@ const OG_IMAGE = {
   width: 1200,
   height: 630,
   type: "image/png",
-  alt: `${site.name} — ${site.tagline}`,
+  alt: `${site.name} — ${site.offering}`,
 };
 const TWITTER_IMAGE = { ...OG_IMAGE, url: "/twitter-image" };
 

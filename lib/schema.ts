@@ -38,7 +38,7 @@ export const organizationSchema = {
   "@id": ORGANIZATION_ID,
   name: site.name,
   url: HOME_URL,
-  description: site.description,
+  description: site.positioning,
   // The logo in `public/`, which is crawlable at its own URL — not the inlined
   // build asset the header renders.
   logo: {

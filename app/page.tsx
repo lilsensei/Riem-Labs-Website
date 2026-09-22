@@ -17,6 +17,7 @@ import { featuredProjects } from "@/lib/projects";
 import { organizationSchema, webSiteSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { services } from "@/lib/services";
+import { site } from "@/lib/site";
 
 /**
  * The homepage title names the studio itself, so it opts out of the layout's
@@ -24,9 +25,8 @@ import { services } from "@/lib/services";
  */
 export const metadata: Metadata = pageMetadata({
   path: "/",
-  title: "Riem Labs — Websites, Digital Products & Business Systems",
-  description:
-    "Riem Labs is a Nairobi-based digital practice designing and building websites, digital products and business systems around real operational needs.",
+  title: `${site.name} — ${site.offering}`,
+  description: site.positioning,
   absoluteTitle: true,
 });
 

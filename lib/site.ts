@@ -5,6 +5,21 @@ export const site = {
   description:
     "Riem Labs is an independent design studio building digital products, interfaces, and web systems — shaped from first idea to working form.",
   /**
+   * The current positioning, in the two forms search and social ask for.
+   *
+   * These were written out by hand in the homepage metadata while the
+   * Organization schema and the social card's alt text still carried the
+   * older `tagline`/`description` wording — the same studio described two
+   * ways depending on where a crawler looked. Both now read from here.
+   *
+   * `tagline` and `description` above are kept as they are: they still serve
+   * the root layout's fallback title and description, and the tagline is set
+   * into the social card artwork itself.
+   */
+  offering: "Websites, Digital Products & Business Systems",
+  positioning:
+    "Riem Labs is a Nairobi-based digital practice designing and building websites, digital products and business systems around real operational needs.",
+  /**
    * The canonical origin, and the single source for it.
    *
    * Everything that has to agree on where the site lives reads this: the
