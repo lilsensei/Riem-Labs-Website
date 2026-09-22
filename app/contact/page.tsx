@@ -59,13 +59,20 @@ export default function ContactPage() {
                   label was being pushed 33px below its own — which is why the
                   two columns started at different heights. Flush matches. */}
               <div className="border-t border-hairline lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
-                <p className="meta flex items-baseline gap-2">
+                {/* `pb-6` and no margin below, which is exactly what the
+                    form's <legend> carries, with `mt-8` on the list below to
+                    stand in for the `pt-8` a fieldset applies to everything
+                    after its legend. Together that is the 56px the numbered
+                    sections put between heading and content; this block had
+                    40px from the list's own margin and nothing else, so it
+                    read as a different kind of thing beside them. */}
+                <p className="meta flex items-baseline gap-2 pb-6">
                   <span className="tnum text-accent">05</span>
                   <span className="text-ink/25">/</span>
                   <span>Direct</span>
                 </p>
 
-                <dl className="mt-10 space-y-8">
+                <dl className="mt-8 space-y-8">
                   <Fade>
                     <dt className="meta text-ink/60">Email</dt>
                     <dd className="mt-2">

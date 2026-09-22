@@ -23,7 +23,10 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://riemlabs.com"),
+  // riemlabs.dev, from the one constant the sitemap and robots.txt also read.
+  // This was pointing at riemlabs.com, which would have had every canonical and
+  // Open Graph URL naming a different host from the one the sitemap lists.
+  metadataBase: new URL(site.url),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s — ${site.name}`,

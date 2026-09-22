@@ -4,6 +4,15 @@ export const site = {
   tagline: "Design & web systems studio",
   description:
     "Riem Labs is an independent design studio building digital products, interfaces, and web systems — shaped from first idea to working form.",
+  /**
+   * The canonical origin, and the single source for it.
+   *
+   * Everything that has to agree on where the site lives reads this: the
+   * metadataBase behind canonical and Open Graph URLs, the sitemap's absolute
+   * entries, and the sitemap reference in robots.txt. No trailing slash, so
+   * `${site.url}/about` composes cleanly.
+   */
+  url: "https://riemlabs.dev",
   /** The one published inbox — enquiries, legal pages and billing alike. */
   email: "info@riemlabs.dev",
   /** The one published number: calls, and the same line WhatsApp opens. */
