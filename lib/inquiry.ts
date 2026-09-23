@@ -181,9 +181,11 @@ export function inquiryHtml(inquiry: Inquiry) {
     `<div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;line-height:1.6;color:#111">`,
     `<p style="margin:0 0 16px;font-weight:600">New inquiry from the Riem Labs contact form</p>`,
     `<table style="border-collapse:collapse;margin:0 0 20px">${rows}</table>`,
-    `<p style="margin:0 0 20px"><a href="mailto:${encodeURI(inquiry.email)}" style="color:#1B17FF">Reply to ${escapeHtml(
-      inquiry.name,
-    )}</a></p>`,
+    // Fixed wording, but the address is still the visitor's: the link opens a
+    // reply to them, while the label stays the same on every inquiry.
+    `<p style="margin:0 0 20px"><a href="mailto:${encodeURI(
+      inquiry.email,
+    )}" style="color:#1B17FF">Reply to enquiry</a></p>`,
     `<p style="margin:0 0 6px;color:#666">Brief</p>`,
     // white-space:pre-wrap so the visitor's own paragraphs survive
     `<div style="white-space:pre-wrap;padding:12px 14px;background:#f5f5f2;border-left:2px solid #1B17FF">${escapeHtml(

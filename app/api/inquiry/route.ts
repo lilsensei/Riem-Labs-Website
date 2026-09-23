@@ -118,12 +118,16 @@ export async function POST(request: Request) {
     // The sender is the managed mailbox itself — the token authorises that one
     // mailbox, and the API takes no `from`. There is also no Reply-To field in
     // the payload, so the visitor's address is carried in the body, both as a
-    // field and as a one-click mailto link; see lib/inquiry.ts. `displayName`
-    // puts their name in the From line so the inbox still reads at a glance.
+    // field and as a one-click mailto link; see lib/inquiry.ts.
+    //
+    // `displayName` names the source rather than the visitor: every inquiry
+    // arrives from the same "Riem Labs Website", so the inbox sorts and filters
+    // on one constant sender instead of a different person each time. Who sent
+    // it is in the enquiry details, where it belongs.
     const send = new SendApi(new Configuration({ accessToken: token }));
     await send.sendEmail(mailboxId, {
       to: [to],
-      displayName: `${inquiry.name} via riemlabs.dev`,
+      displayName: "Riem Labs Website",
       subject: inquirySubject(inquiry),
       text: inquiryText(inquiry),
       html: inquiryHtml(inquiry),
