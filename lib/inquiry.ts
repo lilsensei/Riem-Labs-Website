@@ -163,11 +163,11 @@ export function inquiryText(inquiry: Inquiry) {
 /**
  * Deliberately plain — a readable record, not a designed email.
  *
- * Carries a mailto link to the visitor because the Hostinger Mail API has no
- * Reply-To field: its send payload is to/cc/bcc/subject/text/html/attachments
- * and nothing else, and `inReplyTo` is message threading rather than the
- * header. The mailbox sends to itself, so hitting Reply would answer us. One
- * click on this opens a reply addressed to the visitor instead.
+ * The mailto link began as a workaround, from a transport that could not set
+ * Reply-To. The route sets a real one now, so Gmail's own Reply button already
+ * answers the visitor and the link is no longer load-bearing. It stays because
+ * it still says who to answer when the message is forwarded, printed, or read
+ * somewhere the header is not surfaced.
  */
 export function inquiryHtml(inquiry: Inquiry) {
   const rows = FIELD_ORDER.map(
