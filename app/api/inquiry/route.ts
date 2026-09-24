@@ -1,4 +1,4 @@
-import { Configuration, SendApi } from "hostinger-mail-api-sdk";
+import nodemailer from "nodemailer";
 import {
   MAX_BODY_BYTES,
   inquiryHtml,
@@ -13,18 +13,25 @@ import { checkRateLimit, clientKey } from "@/lib/rateLimit";
 /**
  * Contact inquiries.
  *
- * Email only for now: validate, then send through the Hostinger-managed
- * mailbox. When inquiries are stored as well, the insert goes between those
- * two steps — marked below — and nothing else in this file needs to move.
+ * Email only for now: validate, then send over the studio's own mailbox by
+ * SMTP. When inquiries are stored as well, the insert goes between those two
+ * steps — marked below — and nothing else in this file needs to move.
  *
  * Only POST is exported, so Next answers anything else with 405 on its own.
  */
 
 /**
- * Never prerender or cache this. The route reads request headers and talks to
- * a third party; a cached response would be actively wrong.
+ * Never prerender or cache this. The route reads request headers and opens a
+ * socket; a cached response would be actively wrong.
  */
 export const dynamic = "force-dynamic";
+
+/**
+ * SMTP is a TCP socket, which the edge runtime has no way to open. This is
+ * already the default for a route handler — stated rather than assumed,
+ * because the failure if it ever changed would be at runtime, in production.
+ */
+export const runtime = "nodejs";
 
 type Failure = "validation_error" | "submission_failed" | "rate_limited";
 
@@ -93,21 +100,17 @@ export async function POST(request: Request) {
   // so a record exists even if the mail provider is having a bad day.
 
   // ---- 7. Send ------------------------------------------------------------
-  const token = process.env.HOSTINGER_MAIL_API_TOKEN;
-  const mailboxId = process.env.HOSTINGER_MAILBOX_ID;
+  const user = process.env.SMTP_USER;
+  const password = process.env.SMTP_APP_PASSWORD;
   const to = process.env.INQUIRY_TO_EMAIL;
 
-  if (!token || !mailboxId || !to) {
+  if (!user || !password || !to) {
     // A configuration problem, not the visitor's. Say so in the log, where the
     // people who can fix it will look, and keep the public answer generic.
     // Only the names are logged — never a value.
     console.error(
       "[inquiry] missing configuration:",
-      [
-        !token && "HOSTINGER_MAIL_API_TOKEN",
-        !mailboxId && "HOSTINGER_MAILBOX_ID",
-        !to && "INQUIRY_TO_EMAIL",
-      ]
+      [!user && "SMTP_USER", !password && "SMTP_APP_PASSWORD", !to && "INQUIRY_TO_EMAIL"]
         .filter(Boolean)
         .join(", "),
     );
@@ -115,27 +118,43 @@ export async function POST(request: Request) {
   }
 
   try {
-    // The sender is the managed mailbox itself — the token authorises that one
-    // mailbox, and the API takes no `from`. There is also no Reply-To field in
-    // the payload, so the visitor's address is carried in the body, both as a
-    // field and as a one-click mailto link; see lib/inquiry.ts.
-    //
-    // `displayName` names the source rather than the visitor: every inquiry
-    // arrives from the same "Riem Labs Website", so the inbox sorts and filters
-    // on one constant sender instead of a different person each time. Who sent
-    // it is in the enquiry details, where it belongs.
-    const send = new SendApi(new Configuration({ accessToken: token }));
-    await send.sendEmail(mailboxId, {
-      to: [to],
-      displayName: "Riem Labs Website",
+    /**
+     * Google Workspace SMTP, authenticating as the studio mailbox with an app
+     * password. Port 587 opens in the clear and upgrades to TLS via STARTTLS,
+     * which is what `secure: false` means here — not that the session stays
+     * unencrypted.
+     */
+    const transport = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: { user, pass: password },
+    });
+
+    /**
+     * `from` is the authenticated mailbox, because Gmail will not let it be
+     * anything else, and the name beside it is the source rather than the
+     * visitor — every inquiry arrives from one constant sender the inbox can
+     * sort and filter on.
+     *
+     * `replyTo` is the point of this transport. The visitor's address now
+     * reaches the mail as a real header, so Gmail's own Reply button answers
+     * them. The mailto link in the body predates this and stays: it still
+     * works, and it is the one part of the mail that says who to answer even
+     * when the message is forwarded or printed.
+     */
+    await transport.sendMail({
+      from: { name: "Riem Labs Website", address: user },
+      to,
+      replyTo: inquiry.email,
       subject: inquirySubject(inquiry),
       text: inquiryText(inquiry),
       html: inquiryHtml(inquiry),
-    } as Parameters<SendApi["sendEmail"]>[1]);
+    });
   } catch (cause) {
-    // The provider's own error can name mailboxes, tokens and internals, so it
-    // goes to the server log and never to the browser.
-    console.error("[inquiry] hostinger rejected the send:", cause);
+    // The provider's own error can name mailboxes, credentials and internals,
+    // so it goes to the server log and never to the browser.
+    console.error("[inquiry] smtp rejected the send:", cause);
     return fail("submission_failed", "We could not send that just now.", 502);
   }
 
