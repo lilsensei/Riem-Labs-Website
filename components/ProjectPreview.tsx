@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 import BracketLink from "@/components/BracketLink";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 import { EASE, gsap } from "@/lib/gsap";
-import type { Project } from "@/lib/projects";
+import { STATUS_LABEL, type Project } from "@/lib/projects";
 
 type ProjectPreviewProps = {
   project: Project | null;
@@ -261,12 +261,14 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
                 </div>
                 <div>
                   <dt className="meta text-ink/35">Status</dt>
+                  {/* Accent is reserved for a project a visitor can actually
+                      go and use; anything short of that reads as body text. */}
                   <dd
                     className={`mt-2 text-sm ${
                       project.status === "live" ? "text-accent" : "text-ink/70"
                     }`}
                   >
-                    {project.status === "live" ? "Live" : "Concept"}
+                    {STATUS_LABEL[project.status]}
                   </dd>
                 </div>
                 <div>

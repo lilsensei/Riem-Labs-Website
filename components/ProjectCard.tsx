@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import Glyph, { type GlyphColor, type GlyphHandle } from "@/components/Glyph";
 import type { Choreography } from "@/lib/glyphChoreographies";
-import type { Project } from "@/lib/projects";
+import { STATUS_LABEL, type Project } from "@/lib/projects";
 
 type ProjectCardProps = {
   project: Project;
@@ -213,7 +213,7 @@ export default function ProjectCard({
         {/* Status flag, not a tech tag — filled solid instead of outlined so
             it reads as distinct from the technology row it shares. */}
         <li className="micro bg-accent px-2 py-1 text-canvas">
-          {project.status === "live" ? "Live" : "Concept"}
+          {STATUS_LABEL[project.status]}
         </li>
       </ul>
     </article>

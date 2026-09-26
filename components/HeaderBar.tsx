@@ -124,6 +124,11 @@ export default function HeaderBar({
           isReveal ? "after:bg-mist/25" : "after:bg-hairline"
         }`}
       >
+        {/* Both logos carry `sizes` because both are `priority`, and a priority
+            image is preloaded in the head. The mark is 1200px wide but drawn at
+            about 106px, so without it Next asks for the 1200px candidate at 1x
+            and the 3840px one at 2x — a high-priority fetch, before anything
+            else, of roughly ten times the pixels the header can show. */}
         {isReveal ? (
           <span className="flex items-center">
             {/* brightness-0 invert renders the mark and wordmark pure white. */}
@@ -131,6 +136,7 @@ export default function HeaderBar({
               src={logoSrc}
               alt=""
               priority
+              sizes="(min-width: 640px) 121px, 106px"
               className="h-7 w-auto brightness-0 invert sm:h-8"
             />
           </span>
@@ -145,6 +151,7 @@ export default function HeaderBar({
               src={logoSrc}
               alt={site.name}
               priority
+              sizes="(min-width: 640px) 121px, 106px"
               data-header-logo=""
               className="h-7 w-auto sm:h-8"
             />

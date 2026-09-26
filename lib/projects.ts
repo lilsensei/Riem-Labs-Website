@@ -38,8 +38,24 @@ export type Project = {
   /** "concept" until a project is adopted as a real business's actual live
    *  site, at which point it flips to "live" — same distinction the old
    *  "template" label made, worded for a public reader rather than an
-   *  internal one. */
-  status: "concept" | "live";
+   *  internal one.
+   *
+   *  "coming-soon" is the state between the two: built and adopted, but not
+   *  yet on its permanent hosting, so there is no address worth sending a
+   *  visitor to. Such a project carries no `href`, which is what removes the
+   *  "Visit live site" CTA. */
+  status: "concept" | "coming-soon" | "live";
+};
+
+/**
+ * What each status is called in public, in one place so the index card and the
+ * preview panel cannot drift apart. `.micro` uppercases the card's copy, so
+ * "Coming Soon" reads as "COMING SOON" there and in title case in the panel.
+ */
+export const STATUS_LABEL: Record<Project["status"], string> = {
+  concept: "Concept",
+  "coming-soon": "Coming Soon",
+  live: "Live",
 };
 
 /**
@@ -64,9 +80,10 @@ export const projects: Project[] = [
     deliverables: ["Web Design", "Web Development"],
     technology: ["Next.js", "TypeScript", "GSAP", "Lenis"],
     image: "/work/the-clicq.jpg",
-    href: "https://clicq.netlify.app",
+    // No `href` while the status is "coming-soon": the build is only on a
+    // temporary deployment, and that is not an address to hand the public.
     featured: true,
-    status: "live",
+    status: "coming-soon",
   },
   {
     slug: "oracle-chemicals",
