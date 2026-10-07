@@ -330,7 +330,7 @@ export default function ProjectPreview({ project, onClose }: ProjectPreviewProps
             >
               {project.href ? (
                 <BracketLink href={project.href} variant="framed">
-                  Visit live site
+                  View website
                 </BracketLink>
               ) : null}
               {/* `#brief` lands on the form's first fieldset with the cursor

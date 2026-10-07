@@ -80,10 +80,9 @@ export const projects: Project[] = [
     deliverables: ["Web Design", "Web Development"],
     technology: ["Next.js", "TypeScript", "GSAP", "Lenis"],
     image: "/work/the-clicq.jpg",
-    // No `href` while the status is "coming-soon": the build is only on a
-    // temporary deployment, and that is not an address to hand the public.
+    href: "https://theclicq.co.ke/",
     featured: true,
-    status: "coming-soon",
+    status: "live",
   },
   {
     slug: "oracle-chemicals",
